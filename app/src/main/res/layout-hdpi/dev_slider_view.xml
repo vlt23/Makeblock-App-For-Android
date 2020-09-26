@@ -2,30 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/corner_rect"
     android:layout_width="300dp"
-    android:layout_height="64dp" >
+    android:layout_height="64dp">
 
     <TextView
         android:id="@+id/textPort"
         android:layout_width="50dp"
         android:layout_height="64dp"
         android:text="3"
-        android:gravity="center" 
+        android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="1dp"
-            android:layout_height="match_parent" 
-            android:background="#ffa8abad">
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:background="#ffa8abad" />
 
         <ImageView
             android:id="@+id/imageDevice"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:gravity="center" 
+            android:gravity="center"
             android:scaleType="centerInside"
             android:layout_marginLeft="5dp"
             android:src="@drawable/ultrasonic" />
@@ -33,7 +33,7 @@
         <LinearLayout
             android:layout_width="160dp"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/slideBarValue"
@@ -43,7 +43,7 @@
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:text="0" />
-			
+
             <SeekBar
                 android:id="@+id/sliderBar"
                 android:enabled="false"
@@ -54,7 +54,6 @@
                 android:layout_weight="1" />
 
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

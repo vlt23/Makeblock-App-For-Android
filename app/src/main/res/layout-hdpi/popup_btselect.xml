@@ -4,12 +4,13 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:cacheColorHint="#00000000"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
+
         <Button
             android:id="@+id/popupRefreshBtn"
             android:layout_width="80dp"
@@ -25,8 +26,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/selectdevice"
-            />
+            android:text="@string/selectdevice" />
 
         <Button
             android:id="@+id/popupOkBtn"
@@ -34,17 +34,15 @@
             android:layout_height="32dp"
             android:background="@drawable/btn_blue"
             style="@style/ButtonText"
-            android:text="@string/ok"/>
+            android:text="@string/ok" />
     </LinearLayout>
-    <ListView 
-        android:id="@+id/btdevList"
-		android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp"
-		android:layout_weight="1"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-    </ListView>
 
-    
+    <ListView
+        android:id="@+id/btdevList"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -1,16 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/menu"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#FFFFFF"
-        android:orientation="vertical" >
-		<!-- RadioGroup 
+        android:orientation="vertical">
+		<!-- RadioGroup
 		    android:id="@+id/radioModSelect"
 		    android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,22 +18,21 @@
                     android:id="@+id/modMakeblock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall" 
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:checked="true"
                     android:text="Makeblock" />
                 <RadioButton
                     android:id="@+id/modArduino"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall" 
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="Arduino" />
 		</RadioGroup-->
         <ListView
             android:id="@+id/moduleListView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
-        </ListView>
+            android:layout_weight="1" />
     </LinearLayout>
 
     <FrameLayout
@@ -43,14 +41,12 @@
         android:layout_height="match_parent"
         android:background="#FFFFFFFF"
         android:foreground="@drawable/shape_window_dim"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:background="#ff000000" >
-
-        </FrameLayout>
+            android:background="#ff000000" />
 
         <ImageButton
             android:id="@+id/drawModule"
@@ -69,7 +65,6 @@
             android:background="#00000000"
             android:scaleType="centerInside"
             android:src="@drawable/run_button" />
-
     </FrameLayout>
 
 </LinearLayout>

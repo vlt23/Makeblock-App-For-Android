@@ -3,21 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFFFF"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical" >
-	<ListView
-		android:id="@+id/centerList"
-		android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp"
-		android:layout_weight="1"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content" >
-	</ListView>
-         
-    </LinearLayout> 
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/centerList"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </LinearLayout>
 
 </RelativeLayout>

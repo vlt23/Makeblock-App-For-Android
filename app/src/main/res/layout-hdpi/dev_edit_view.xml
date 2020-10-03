@@ -47,7 +47,7 @@
             android:textSize="18dp" />
 
         <CheckBox
-            android:id="@+id/syncTime "
+            android:id="@+id/syncTime"
             android:layout_width="80dp"
             android:layout_height="fill_parent"
             android:text="Time" />

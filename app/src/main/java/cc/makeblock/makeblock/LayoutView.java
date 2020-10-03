@@ -287,17 +287,10 @@ public class LayoutView extends Activity {
 
     void showPopupWindow(MeModule mod) {
         // don't show port select for joystick
-
-
         popupLayout = (LinearLayout) LayoutInflater.from(this).inflate(
                 R.layout.popup_menu, null);
         popupWindow = new PopupWindow(this);
         popupWindow.setWidth(screenWidth / 2);
-//		if(mod.type==MeModule.DEV_JOYSTICK){
-//			popupWindow.setHeight((int) (screenHeight*0.2));
-//		}else{
-//			popupWindow.setHeight((int) (screenHeight*0.7));
-//		}
         popupWindow.setHeight((int) (screenHeight * 0.8));
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
@@ -578,7 +571,7 @@ public class LayoutView extends Activity {
         map.put("title", getString(R.string.ultrasonic));
         map.put("info", "");
         map.put("img", R.drawable.ultrasonic);
-        map.put("dev", MeModule.DEV_ULTRASOINIC);
+        map.put("dev", MeModule.DEV_ULTRASONIC);
         list.add(map);
 
         map = new HashMap<>();
@@ -812,7 +805,7 @@ public class LayoutView extends Activity {
                     int[] rx = (int[]) msg.obj;
                     parseMsg(rx);
                     break;
-                case Bluetooth.MSG_FOUNDDEVICE:
+                case Bluetooth.MSG_FOUND_DEVICE:
                     devListChanged();
                     break;
                 case Bluetooth.MSG_DISCOVERY_FINISHED: {
@@ -822,7 +815,7 @@ public class LayoutView extends Activity {
                     }
                 }
                 break;
-                case MeModule.MSG_VALUECHANGED:
+                case MeModule.MSG_VALUE_CHANGED:
                     byte[] cmd = (byte[]) msg.obj;
                     if (blt != null) {
                         blt.bluetoothWrite(cmd);
@@ -881,7 +874,7 @@ public class LayoutView extends Activity {
                     int[] rx = (int[]) msg.obj;
                     parseMsg(rx);
                     break;
-                case BluetoothLE.MSG_FOUNDDEVICE:
+                case BluetoothLE.MSG_FOUND_DEVICE:
                     devLEListChanged();
                     break;
                 case BluetoothLE.MSG_CONNECTING: {
@@ -891,7 +884,7 @@ public class LayoutView extends Activity {
                     startActivity(intent);
                 }
                 break;
-                case MeModule.MSG_VALUECHANGED:
+                case MeModule.MSG_VALUE_CHANGED:
                     byte[] cmd = (byte[]) msg.obj;
                     BluetoothLE.sharedManager().writeBuffer(cmd);
                     break;

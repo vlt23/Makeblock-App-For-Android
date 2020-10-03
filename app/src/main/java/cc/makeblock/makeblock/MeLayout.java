@@ -53,7 +53,7 @@ public class MeLayout {
 
                 MeModule mod = null;
                 switch (modtype) {
-                    case MeModule.DEV_ULTRASOINIC:
+                    case MeModule.DEV_ULTRASONIC:
                         mod = new MeUltrasonic(jobj);
                         break;
                     case MeModule.DEV_TEMPERATURE:
@@ -157,7 +157,7 @@ public class MeLayout {
         MeModule mod;
         updateTime = getTime();
         switch (type) {
-            case MeModule.DEV_ULTRASOINIC:
+            case MeModule.DEV_ULTRASONIC:
                 mod = new MeUltrasonic(port, slot);
                 mod.xPosition = x;
                 mod.yPosition = y;

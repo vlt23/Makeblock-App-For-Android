@@ -14,10 +14,10 @@ import cc.makeblock.makeblock.R;
 public class MeUltrasonic extends MeModule {
     static String devName = "ultrasonic";
     private ToggleButton toggleBt;
-    private Handler mLoopHandler = new Handler();
+    private final Handler mLoopHandler = new Handler();
 
     public MeUltrasonic(int port, int slot) {
-        super(devName, MeModule.DEV_ULTRASOINIC, port, slot);
+        super(devName, MeModule.DEV_ULTRASONIC, port, slot);
         viewLayout = R.layout.dev_auto_driver;
         imageId = R.drawable.ultrasonic;
     }
@@ -40,7 +40,7 @@ public class MeUltrasonic extends MeModule {
     private int motorSpeed = 0;
     private int mBackTime = 0;
     private int mFrontTime = 0;
-    private Runnable mRunnable = new Runnable() {
+    private final Runnable mRunnable = new Runnable() {
         public void run() {
             if (isAuto) {
                 mLoopHandler.postDelayed(this, 100);
@@ -51,24 +51,24 @@ public class MeUltrasonic extends MeModule {
                             if (mBackTime < 5) {
                                 mBackTime++;
                                 byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, -motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                                 byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, -motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUECHANGED, wr2).sendToTarget();
+                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
                             } else if (mBackTime < 10) {
                                 mBackTime++;
                                 byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                                 byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, -motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUECHANGED, wr2).sendToTarget();
+                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
                             } else {
                                 mBackTime = 0;
                             }
                         } else {
                             if (mFrontTime < 10) {
                                 byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                                 byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUECHANGED, wr2).sendToTarget();
+                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
                             }
                             if (mCurrentValue == 0) {
                                 mFrontTime++;
@@ -94,9 +94,9 @@ public class MeUltrasonic extends MeModule {
                     mLoopHandler.postDelayed(mRunnable, 100);
                 } else {
                     byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, 0);
-                    mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                    mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                     byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, 0);
-                    mHandler.obtainMessage(MSG_VALUECHANGED, wr2).sendToTarget();
+                    mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
                 }
             }
         };

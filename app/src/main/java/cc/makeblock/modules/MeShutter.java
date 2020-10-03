@@ -20,7 +20,7 @@ import cc.makeblock.makeblock.R;
 @SuppressLint("NewApi")
 public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListener {
     static String devName = "shutter";
-    private EditText intevalText;
+    private EditText intervalText;
     private SeekBar timeSeekBar;
     private EditText timeText;
     private EditText startText;
@@ -71,7 +71,7 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
                 }
             }
         };
-        intevalText = view.findViewById(R.id.intervalText);
+        intervalText = view.findViewById(R.id.intervalText);
         timeSeekBar = view.findViewById(R.id.timeSeekBar);
         timeSeekBar.setOnSeekBarChangeListener(this);
 //		timeSeekBar.setProgress(5);
@@ -83,11 +83,11 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
             @Override
             public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
                 mIndex = 0;
-                Log.d("mb", startText.getText().toString() + ":" + intevalText.getText().toString());
+                Log.d("mb", startText.getText().toString() + ":" + intervalText.getText().toString());
                 if (arg1) {
                     if (mTimer != null) {
                         long interval = Integer.parseInt(startText.getText().toString()) * 1000;
-                        long during = Integer.parseInt(intevalText.getText().toString()) * 1000;
+                        long during = Integer.parseInt(intervalText.getText().toString()) * 1000;
                         Log.d("mb", "interval:" + interval + " - during:" + during);
                         mTask = new TimerTask() {
                             public void run() {
@@ -110,7 +110,7 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
     private void doShutter() {
         mIndex++;
         byte[] wr = buildWrite(type, port, slot, 1);
-        mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+        mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
 
         if (Integer.parseInt(timeText.getText().toString()) > 0) {
             if (mIndex >= Integer.parseInt(timeText.getText().toString())) {
@@ -126,18 +126,11 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
     }
 
     public void setDisable() {
-
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress,
-                                  boolean fromUser) {
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         timeText.setText(progress);
-//		if(valueTxt!=null){
-//			valueTxt.setText(value+"");
-//			byte[] wr = buildWrite(type, port, slot, value);
-//			mHandler.obtainMessage(MSG_VALUECHANGED,wr).sendToTarget();
-//		}
     }
 
     @Override

@@ -30,7 +30,7 @@ public class Bluetooth extends Service {
     static final int MSG_CONNECTED = 1;
     static final int MSG_DISCONNECTED = 2;
     static final int MSG_RX = 3;
-    static final int MSG_FOUNDDEVICE = 4;
+    static final int MSG_FOUND_DEVICE = 4;
     static final int MSG_CONNECT_FAIL = 5;
     static final int MSG_DISCOVERY_FINISHED = 6;
 
@@ -99,11 +99,10 @@ public class Bluetooth extends Service {
 
     private class ConnectThread extends Thread {
         private BluetoothSocket mmSocket = null;
-        private BluetoothDevice mmDevice;
+        private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
             mmDevice = device;
-
         }
 
         public void setBluetoothPairingPin(BluetoothDevice device) {
@@ -185,12 +184,12 @@ public class Bluetooth extends Service {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
-        private List<Byte> mRx;
+        private final List<Byte> mRx;
         public boolean txBusy;
 
         public ConnectedThread(BluetoothSocket socket) {
             mmSocket = socket;
-            mRx = new ArrayList<Byte>();
+            mRx = new ArrayList<>();
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
@@ -284,10 +283,10 @@ public class Bluetooth extends Service {
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 //Log.d("mb", "bluetooth found:"+device.getName()+" "+device.getAddress()+" "+device.getBondState()+" "+BluetoothDevice.BOND_NONE+" "+BluetoothDevice.BOND_BONDED);
-                if (btDevices.indexOf(device) == -1) {
+                if (!btDevices.contains(device)) {
                     btDevices.add(device);
                     if (mHandler != null) {
-                        Message msg = mHandler.obtainMessage(MSG_FOUNDDEVICE);
+                        Message msg = mHandler.obtainMessage(MSG_FOUND_DEVICE);
                         mHandler.sendMessage(msg);
                     }
                 }
@@ -375,7 +374,7 @@ public class Bluetooth extends Service {
         }
     }
 
-    public void bluetoothConnect(BluetoothDevice device) throws Exception {
+    public void bluetoothConnect(BluetoothDevice device) {
         Log.i(dbg, "try connect to " + device.getName());
         if (mConnectThread != null) {
             mConnectThread.cancel();

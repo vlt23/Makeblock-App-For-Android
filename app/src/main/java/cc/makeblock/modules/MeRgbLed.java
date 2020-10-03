@@ -27,8 +27,8 @@ public class MeRgbLed extends MeModule implements OnTouchListener {
         this.scale = 1.0f;
     }
 
-    public MeRgbLed(JSONObject jobj) {
-        super(jobj);
+    public MeRgbLed(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_rgb_view;
         imageId = R.drawable.rgbled;
         shouldSelectSlot = true;
@@ -91,7 +91,7 @@ public class MeRgbLed extends MeModule implements OnTouchListener {
             cTime = System.currentTimeMillis();
             int iRGB = (r << 8) + (g << 16) + (b << 24);
             byte[] wr = buildWrite(type, port, slot, iRGB);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         }
     }
 }

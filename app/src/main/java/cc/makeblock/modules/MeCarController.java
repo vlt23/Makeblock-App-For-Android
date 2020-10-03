@@ -31,7 +31,7 @@ public class MeCarController extends MeModule {
         @Override
         public void run() {
             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, 0, 0);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         }
     };
 
@@ -52,15 +52,7 @@ public class MeCarController extends MeModule {
     @SuppressLint("ClickableViewAccessibility")
     public void setEnable(Handler handler) {
         mHandler = handler;
-        mLeftUpButton = view.findViewById(R.id.leftUpButton);
-        mRightUpButton = view.findViewById(R.id.rightUpButton);
-        mLeftDownButton = view.findViewById(R.id.leftDownButton);
-        mRightDownButton = view.findViewById(R.id.rightDownButton);
-        mLeftButton = view.findViewById(R.id.leftButton);
-        mRightButton = view.findViewById(R.id.rightButton);
-        mUpButton = view.findViewById(R.id.upButton);
-        mDownButton = view.findViewById(R.id.downButton);
-        mSpeedButton = view.findViewById(R.id.speedButton);
+        findAllViewById();
         mLeftUpButton.setClickable(true);
         mRightUpButton.setClickable(true);
         mLeftDownButton.setClickable(true);
@@ -76,7 +68,7 @@ public class MeCarController extends MeModule {
                 if (evt.getAction() == MotionEvent.ACTION_UP) {
                     MeDevice.sharedManager().manualMode = false;
                     byte[] wr = buildJoystickWrite(DEV_JOYSTICK, 0, 0);
-                    mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                    mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                     mStopHandler.postDelayed(mStopRunnable, 150);
                     return true;
                 } else if (evt.getAction() == MotionEvent.ACTION_DOWN) {
@@ -85,28 +77,28 @@ public class MeCarController extends MeModule {
                         MeDevice.sharedManager().manualMode = true;
                         if (v.equals(mLeftUpButton)) {
                             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, motorSpeed / 2, motorSpeed);
-                            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                         } else if (v.equals(mLeftDownButton)) {
                             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, -motorSpeed / 2, -motorSpeed);
-                            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                         } else if (v.equals(mRightUpButton)) {
                             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, motorSpeed, motorSpeed / 2);
-                            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                         } else if (v.equals(mRightDownButton)) {
                             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, -motorSpeed, -motorSpeed / 2);
-                            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                         } else if (v.equals(mLeftButton)) {
                             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, -motorSpeed, motorSpeed);
-                            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                         } else if (v.equals(mRightButton)) {
                             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, motorSpeed, -motorSpeed);
-                            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                         } else if (v.equals(mUpButton)) {
                             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, motorSpeed, motorSpeed);
-                            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                         } else if (v.equals(mDownButton)) {
                             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, -motorSpeed, -motorSpeed);
-                            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                         }
                     }
                 }
@@ -161,7 +153,7 @@ public class MeCarController extends MeModule {
         });
     }
 
-    public void setDisable() {
+    private void findAllViewById() {
         mLeftUpButton = view.findViewById(R.id.leftUpButton);
         mRightUpButton = view.findViewById(R.id.rightUpButton);
         mLeftDownButton = view.findViewById(R.id.leftDownButton);
@@ -171,6 +163,10 @@ public class MeCarController extends MeModule {
         mUpButton = view.findViewById(R.id.upButton);
         mDownButton = view.findViewById(R.id.downButton);
         mSpeedButton = view.findViewById(R.id.speedButton);
+    }
+
+    public void setDisable() {
+        findAllViewById();
         mLeftUpButton.setOnClickListener(null);
         mRightUpButton.setOnClickListener(null);
         mLeftDownButton.setOnClickListener(null);

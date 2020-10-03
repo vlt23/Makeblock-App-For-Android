@@ -26,7 +26,7 @@ public class MeGripper extends MeModule {
         @Override
         public void run() {
             byte[] wr = buildWrite(DEV_DCMOTOR, port, slot, 0);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         }
     };
 
@@ -59,7 +59,7 @@ public class MeGripper extends MeModule {
                 if (evt.getAction() == MotionEvent.ACTION_UP) {
                     //MeDevice.sharedManager().manualMode = false;
                     byte[] wr = buildWrite(DEV_DCMOTOR, port, slot, 0);
-                    mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                    mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                     mStopHandler.postDelayed(mStopRunnable, 150);
                     return true;
                 } else if (evt.getAction() == MotionEvent.ACTION_DOWN) {
@@ -67,10 +67,10 @@ public class MeGripper extends MeModule {
                     Log.d("mb", "port:" + port);
                     if (v.equals(mLeftGripperBtn)) {
                         byte[] wr = buildWrite(DEV_DCMOTOR, port, slot, -motorSpeed);
-                        mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                        mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                     } else if (v.equals(mRightGripperBtn)) {
                         byte[] wr = buildWrite(DEV_DCMOTOR, port, slot, motorSpeed);
-                        mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                        mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
                     }
                 }
                 return false;

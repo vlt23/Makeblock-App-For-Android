@@ -38,10 +38,10 @@ public class MeLightSensor extends MeModule implements OnCheckedChangeListener {
         ledCheck.setOnCheckedChangeListener(this);
         if (ledCheck.isChecked()) {
             byte[] wr = buildWrite(type, port, slot, 1);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         } else {
             byte[] wr = buildWrite(type, port, slot, 0);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         }
     }
 
@@ -63,10 +63,10 @@ public class MeLightSensor extends MeModule implements OnCheckedChangeListener {
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             byte[] wr = buildWrite(type, port, slot, 1);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         } else {
             byte[] wr = buildWrite(type, port, slot, 0);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         }
     }
 

@@ -17,7 +17,7 @@ public class MeDcMotor extends MeModule implements SeekBar.OnSeekBarChangeListen
         @Override
         public void run() {
             byte[] wr = buildWrite(type, port, slot, 0);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         }
     };
 
@@ -58,7 +58,7 @@ public class MeDcMotor extends MeModule implements SeekBar.OnSeekBarChangeListen
                 cTime = System.currentTimeMillis();
                 valueTxt.setText(value);
                 byte[] wr = buildWrite(type, port, slot, value);
-                mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
             }
         }
     }

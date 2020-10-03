@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class Utils {
 
-    private static HashMap<Integer, String> serviceTypes = new HashMap<>();
+    private static final HashMap<Integer, String> serviceTypes = new HashMap<>();
 
     static {
         // Sample Services.
@@ -42,9 +42,8 @@ public class Utils {
         return serviceTypes.get(type);
     }
 
-
     //-------------------------------------------    
-    private static HashMap<Integer, String> charPermissions = new HashMap<>();
+    private static final HashMap<Integer, String> charPermissions = new HashMap<>();
 
     static {
         charPermissions.put(0, "UNKNOW");
@@ -63,10 +62,9 @@ public class Utils {
     }
 
     //-------------------------------------------
-    private static HashMap<Integer, String> charProperties = new HashMap<>();
+    private static final HashMap<Integer, String> charProperties = new HashMap<>();
 
     static {
-
         charProperties.put(BluetoothGattCharacteristic.PROPERTY_BROADCAST, "BROADCAST");
         charProperties.put(BluetoothGattCharacteristic.PROPERTY_EXTENDED_PROPS, "EXTENDED_PROPS");
         charProperties.put(BluetoothGattCharacteristic.PROPERTY_INDICATE, "INDICATE");
@@ -82,7 +80,7 @@ public class Utils {
     }
 
     //--------------------------------------------------------------------------
-    private static HashMap<Integer, String> descPermissions = new HashMap<>();
+    private static final HashMap<Integer, String> descPermissions = new HashMap<>();
 
     static {
         descPermissions.put(0, "UNKNOW");
@@ -106,8 +104,8 @@ public class Utils {
         if (TextUtils.isEmpty(result.toString())) {
             List<Integer> numbers = getElement(number);
             result = new StringBuilder();
-            for (int i = 0; i < numbers.size(); i++) {
-                result.append(hashMap.get(numbers.get(i))).append("|");
+            for (Integer integer : numbers) {
+                result.append(hashMap.get(integer)).append("|");
             }
         }
         return result.toString();
@@ -123,10 +121,8 @@ public class Utils {
             if ((number & b) > 0)
                 result.add(b);
         }
-
         return result;
     }
-
 
     public static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder();

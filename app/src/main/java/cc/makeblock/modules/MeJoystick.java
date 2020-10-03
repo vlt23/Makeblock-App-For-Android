@@ -68,9 +68,9 @@ public class MeJoystick extends MeModule implements OnTouchListener {
         if (lastMotorL != motorL || lastMotorR != motorR) {
             //Log.i(dbg, "joystick l="+motorL+" r="+motorR);
             byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, motorL);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
             byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, motorR);
-            mHandler.obtainMessage(MSG_VALUECHANGED, wr2).sendToTarget();
+            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
             lastMotorL = motorL;
             lastMotorR = motorR;
         }

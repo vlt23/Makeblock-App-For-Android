@@ -68,27 +68,21 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
         if (str.equals("")) str = "0";
         float number = Float.parseFloat(str);
         byte[] wr = buildWrite(type, port, slot, number);
-        mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+        mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        // TODO Auto-generated method stub
         String num = s.toString();
         sendNumber(num);
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count,
-                                  int after) {
-        // TODO Auto-generated method stub
-
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -99,7 +93,6 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
         } else {
             stopTimer();
         }
-
     }
 
     final Handler updateTime = new Handler() {
@@ -122,7 +115,7 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
                     SimpleDateFormat sdf = new SimpleDateFormat("HH.mm");
                     Date dt = new Date();
                     String dts = sdf.format(dt);
-                    updateTime.obtainMessage(MSG_VALUECHANGED, dts).sendToTarget();
+                    updateTime.obtainMessage(MSG_VALUE_CHANGED, dts).sendToTarget();
                     sendNumber(dts);
                 }
             };
@@ -131,7 +124,6 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
         if (mTimer != null) {
             mTimer.schedule(mTimerTask, 1000, 60 * 1000);
         }
-
     }
 
     void stopTimer() {
@@ -145,4 +137,5 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
             mTimerTask = null;
         }
     }
+
 }

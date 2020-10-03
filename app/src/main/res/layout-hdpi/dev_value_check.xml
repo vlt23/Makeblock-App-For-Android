@@ -41,7 +41,7 @@
             android:textSize="16dp" />
 
         <CheckBox
-            android:id="@+id/ledCheck "
+            android:id="@+id/ledCheck"
             android:layout_width="70dp"
             android:layout_height="fill_parent"
             android:enabled="false"

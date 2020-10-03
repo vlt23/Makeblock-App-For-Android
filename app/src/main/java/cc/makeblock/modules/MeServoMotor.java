@@ -46,16 +46,14 @@ public class MeServoMotor extends MeModule implements SeekBar.OnSeekBarChangeLis
     long cTime = System.currentTimeMillis();
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress,
-                                  boolean fromUser) {
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         int value = (int) ((float) progress / 512 * 180);
         if (valueTxt != null) {
-
             if (System.currentTimeMillis() - cTime > 80) {
                 cTime = System.currentTimeMillis();
                 valueTxt.setText(value);
                 byte[] wr = buildWrite(type, port, slot, value);
-                mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
+                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
             }
         }
     }

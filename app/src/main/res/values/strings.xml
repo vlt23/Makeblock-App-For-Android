@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Makeblock</string>
+    <string name="app_name" translatable="false">Makeblock</string>
     <string name="history">History</string>
     <string name="examples">Examples</string>
     <string name="create_new_project">Create New Project</string>

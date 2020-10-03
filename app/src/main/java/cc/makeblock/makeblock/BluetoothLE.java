@@ -41,7 +41,7 @@ public class BluetoothLE extends Service {
     static final int MSG_CONNECTED = 1;
     static final int MSG_DISCONNECTED = 2;
     static final int MSG_RX = 3;
-    static final int MSG_FOUNDDEVICE = 4;
+    static final int MSG_FOUND_DEVICE = 4;
     static final int MSG_CONNECT_FAIL = 5;
     static final int MSG_DISCOVERY_FINISHED = 6;
     static final int MSG_SCAN_START = 8;
@@ -155,7 +155,7 @@ public class BluetoothLE extends Service {
         return mIsConnected;
     }
 
-    private byte[] mBuffers = new byte[1024];
+    private final byte[] mBuffers = new byte[1024];
     private int mBuffersIndex = 0;
 
     public void writeBuffer(byte[] buf) {
@@ -254,7 +254,6 @@ public class BluetoothLE extends Service {
             //-----Characteristics���ֶ���Ϣ-----//  
             List<BluetoothGattCharacteristic> gattCharacteristics = gattService.getCharacteristics();
             for (final BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
-
                 int permission = gattCharacteristic.getPermissions();
 
                 int properties = gattCharacteristic.getProperties();
@@ -296,7 +295,6 @@ public class BluetoothLE extends Service {
                 Message msg = leHandler.obtainMessage(MSG_SCAN_START);
                 leHandler.sendMessage(msg);
             }
-
         } else {
             mScanning = false;
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
@@ -310,7 +308,6 @@ public class BluetoothLE extends Service {
 
         @Override
         public void onDisconnect(BluetoothGatt gatt) {
-            // TODO Auto-generated method stub
             stop();
             Log.d("mb", "ble disconnected");
             if (leHandler != null) {
@@ -400,7 +397,7 @@ public class BluetoothLE extends Service {
                             mDevices.addDevice(device);
                             //push notify
                             if (leHandler != null) {
-                                Message msg = leHandler.obtainMessage(MSG_FOUNDDEVICE);
+                                Message msg = leHandler.obtainMessage(MSG_FOUND_DEVICE);
                                 leHandler.sendMessage(msg);
                             }
                         }
@@ -469,17 +466,17 @@ public class BluetoothLE extends Service {
 //                    }  
 //                 }  
             }
-        }//  
+        }
 
         if (leHandler != null) {
             Message msg = leHandler.obtainMessage(MSG_CONNECTED);
             leHandler.sendMessage(msg);
         }
-
     }
 
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
     }
+
 }  

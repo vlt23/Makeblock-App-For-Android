@@ -18,7 +18,7 @@ public class MeModule {
     static final String dbg = "MeModule";
     // should be same to ios code
     public static final int DEV_VERSION = 0;
-    public static final int DEV_ULTRASOINIC = 1;
+    public static final int DEV_ULTRASONIC = 1;
     public static final int DEV_TEMPERATURE = 2;
     public static final int DEV_LIGHTSENSOR = 3;
     public static final int DEV_POTENTIALMETER = 4;
@@ -43,8 +43,8 @@ public class MeModule {
     public static final int DEV_CAR_CONTROLLER = 40;
     public static final int DEV_GRIPPER_CONTROLLER = 41;
 
-    public static final int SLOT_1 = 1; //0
-    public static final int SLOT_2 = 2; //1
+    public static final int SLOT_1 = 1; // 0
+    public static final int SLOT_2 = 2; // 1
 
     public static final int READ_MODULE = 1;
     public static final int WRITE_MODULE = 2;
@@ -66,7 +66,7 @@ public class MeModule {
     public static final int PORT_12 = 12;  // == PORT_M4
     // End patch for Ultimate Robot Kit v2.0
 
-    public static final int MSG_VALUECHANGED = 0x10;
+    public static final int MSG_VALUE_CHANGED = 0x10;
 
     public String name;
     public int port;

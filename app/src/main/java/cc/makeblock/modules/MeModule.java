@@ -43,12 +43,11 @@ public class MeModule {
     public static final int DEV_CAR_CONTROLLER = 40;
     public static final int DEV_GRIPPER_CONTROLLER = 41;
 
-
     public static final int SLOT_1 = 1; //0
     public static final int SLOT_2 = 2; //1
 
-    public static final int READMODULE = 1;
-    public static final int WRITEMODULE = 2;
+    public static final int READ_MODULE = 1;
+    public static final int WRITE_MODULE = 2;
 
     public static final int VERSION_INDEX = 0xfa;
 
@@ -56,12 +55,16 @@ public class MeModule {
     public static final int PORT_2 = 2;
     public static final int PORT_3 = 3;
     public static final int PORT_4 = 4;
-    public static final int PORT_5 = 5;
-    public static final int PORT_6 = 6;
-    public static final int PORT_7 = 7;
-    public static final int PORT_8 = 8;
+    public static final int PORT_5 = 5;  // unused ???
+    public static final int PORT_6 = 6;  // unused ???
+    public static final int PORT_7 = 7;  // unused ???
+    public static final int PORT_8 = 8;  // unused ???
     public static final int PORT_M1 = 9;
     public static final int PORT_M2 = 10;
+    // Begin patch for Ultimate Robot Kit v2.0
+    public static final int PORT_M3 = 11;  // == PORT_11
+    public static final int PORT_12 = 12;  // == PORT_M4
+    // End patch for Ultimate Robot Kit v2.0
 
     public static final int MSG_VALUECHANGED = 0x10;
 
@@ -73,7 +76,6 @@ public class MeModule {
     public int slot;
     public int scaleType;
     public float scale = 1;
-    //public String value;
 
     public boolean shouldSelectSlot = false;
 
@@ -83,7 +85,7 @@ public class MeModule {
     public View view;
     public String varReg = "";
     public String varReg2 = "";
-    public Handler mHandler;
+    protected Handler mHandler;
 
     public MeModule(String name, int type, int port, int slot) {
         this.name = name;
@@ -118,9 +120,13 @@ public class MeModule {
     }
 
     public void setViewPortString(int port) {
-        if (view == null) return;
+        if (view == null) {
+            return;
+        }
         TextView textPort = view.findViewById(R.id.textPort);
-        if (textPort == null) return;
+        if (textPort == null) {
+            return;
+        }
         if (port < MeModule.PORT_M1) {
             if (type == MeModule.DEV_DCMOTOR) {
                 textPort.setText("PORT " + port);
@@ -131,11 +137,15 @@ public class MeModule {
             textPort.setText("M1");
         } else if (port == MeModule.PORT_M2) {
             textPort.setText("M2");
+        } else if (port == MeModule.PORT_M3) {
+            textPort.setText("M3");
         }
     }
 
     public void setViewPortImage(int imageId) {
-        if (view == null || imageId == 0) return;
+        if (view == null || imageId == 0) {
+            return;
+        }
         ImageView img = view.findViewById(R.id.imageDevice);
         img.setImageResource(imageId);
     }
@@ -179,7 +189,6 @@ public class MeModule {
     }
 
     public void setEnable(Handler handler) {
-
     }
 
     public void setDisable() {
@@ -194,13 +203,12 @@ public class MeModule {
 
     static public byte[] buildQuery(int type, int port, int slot, int index) {
         //tx:FF 55 01 04 01 60 00 0A
-
         byte[] cmd = new byte[9];
         cmd[0] = (byte) 0xff;
         cmd[1] = (byte) 0x55;
         cmd[2] = (byte) 5;
         cmd[3] = (byte) index;
-        cmd[4] = (byte) READMODULE;
+        cmd[4] = (byte) READ_MODULE;
         cmd[5] = (byte) type;
         cmd[6] = (byte) (port & 0xff);
         cmd[7] = (byte) (slot & 0xff);
@@ -222,7 +230,7 @@ public class MeModule {
         cmd[1] = (byte) 0x55;
         cmd[2] = (byte) 9;
         cmd[3] = (byte) 0;
-        cmd[4] = (byte) WRITEMODULE;
+        cmd[4] = (byte) WRITE_MODULE;
         cmd[5] = (byte) type;
         cmd[6] = (byte) (port & 0xff);
         if (type == DEV_SEVSEG) {
@@ -249,7 +257,7 @@ public class MeModule {
         cmd[1] = (byte) 0x55;
         cmd[2] = (byte) 8;
         cmd[3] = (byte) 0;
-        cmd[4] = (byte) WRITEMODULE;
+        cmd[4] = (byte) WRITE_MODULE;
         cmd[5] = (byte) type;
         final ByteBuffer buf = ByteBuffer.allocate(4);
         buf.putShort((short) leftSpeed);
@@ -281,7 +289,7 @@ public class MeModule {
         cmd[1] = (byte) 0x55;
         cmd[2] = (byte) 9;
         cmd[3] = (byte) 0;
-        cmd[4] = (byte) WRITEMODULE;
+        cmd[4] = (byte) WRITE_MODULE;
         cmd[5] = (byte) type;
         cmd[6] = (byte) (port & 0xff);
         cmd[7] = (byte) (slot & 0xff);
@@ -342,12 +350,18 @@ public class MeModule {
                 return "port5";
             case MeModule.PORT_6:
                 return "port6";
+            case MeModule.PORT_7:
+                return "port7";
             case MeModule.PORT_8:
                 return "port8";
+            case MeModule.PORT_12:
+                return "port12";
             case MeModule.PORT_M1:
                 return "m1";
             case MeModule.PORT_M2:
                 return "m2";
+            case MeModule.PORT_M3:
+                return "m3";
             default:
                 return "";
         }

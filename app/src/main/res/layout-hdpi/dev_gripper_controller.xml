@@ -23,7 +23,7 @@
         android:layout_height="wrap_content">
 
         <ImageButton
-            android:id="@+id/leftButton"
+            android:id="@+id/leftGripperBtn"
             android:layout_width="96px"
             android:layout_height="76px"
             android:layout_marginLeft="4px"
@@ -34,7 +34,7 @@
             android:src="@drawable/left_dir" />
 
         <ImageButton
-            android:id="@+id/rightButton"
+            android:id="@+id/rightGripperBtn"
             android:layout_width="96px"
             android:layout_height="76px"
             android:layout_marginLeft="174px"

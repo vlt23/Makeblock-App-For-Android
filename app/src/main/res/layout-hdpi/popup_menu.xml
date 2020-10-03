@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/popupTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -50,7 +50,7 @@
             <RadioGroup
                 android:id="@+id/radioGroup1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <RadioButton
                     android:id="@+id/port1"
@@ -76,29 +76,35 @@
                     android:layout_height="wrap_content"
                     android:text="PORT 4" />
 
-                <RadioButton
-                    android:id="@+id/port5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PORT 5" />
+<!--                <RadioButton-->
+<!--                    android:id="@+id/port5"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="PORT 5" />-->
+
+<!--                <RadioButton-->
+<!--                    android:id="@+id/port6"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="PORT 6" />-->
+
+<!--                <RadioButton-->
+<!--                    android:id="@+id/port7"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="PORT 7" />-->
+
+<!--                <RadioButton-->
+<!--                    android:id="@+id/port8"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="PORT 8" />-->
 
                 <RadioButton
-                    android:id="@+id/port6"
+                    android:id="@+id/port12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="PORT 6" />
-
-                <RadioButton
-                    android:id="@+id/port7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PORT 7" />
-
-                <RadioButton
-                    android:id="@+id/port8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PORT 8" />
+                    android:text="PORT 12" />
 
                 <RadioButton
                     android:id="@+id/portm1"
@@ -111,6 +117,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="M2" />
+
+                <RadioButton
+                    android:id="@+id/portm3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M3" />
             </RadioGroup>
         </ScrollView>
 
@@ -139,27 +151,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-        </FrameLayout>
-
         <TextView
             android:id="@+id/joystickInfo"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:paddingTop="20dp"
             android:text="To control M1&amp;M2, not need to choose ports"
             android:textAlignment="center">
         </TextView>
-
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-        </FrameLayout>
     </LinearLayout>
 
 </LinearLayout>

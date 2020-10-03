@@ -14,8 +14,8 @@ import cc.makeblock.makeblock.R;
 
 public class MeGripper extends MeModule {
     static String devName = "gripper";
-    private ImageButton mLeftButton;
-    private ImageButton mRightButton;
+    private ImageButton mLeftGripperBtn;  // gripper opening
+    private ImageButton mRightGripperBtn;  // gripper closing
     private ImageButton mSpeedButton;
     private TextView mSpeedLabel;
     private TextView mPortLabel;
@@ -45,11 +45,13 @@ public class MeGripper extends MeModule {
     public void setEnable(Handler handler) {
         mHandler = handler;
         mSpeedLabel = view.findViewById(R.id.speedLabel);
-        mLeftButton = view.findViewById(R.id.leftButton);
-        mRightButton = view.findViewById(R.id.rightButton);
+        mLeftGripperBtn = view.findViewById(R.id.leftGripperBtn);
+        mRightGripperBtn = view.findViewById(R.id.rightGripperBtn);
         mSpeedButton = view.findViewById(R.id.speedButton);
         mPortLabel = view.findViewById(R.id.textPort);
-        mPortLabel.setText((port > 8 ? ("M" + (port - 8)) : ("PORT " + port)));
+        if (port != 12) {  // workaround patch, check MeModule class
+            mPortLabel.setText((port > 8 ? ("M" + (port - 8)) : ("PORT " + port)));
+        }
         View.OnTouchListener touchListener = new View.OnTouchListener() {
 
             @Override
@@ -63,10 +65,10 @@ public class MeGripper extends MeModule {
                 } else if (evt.getAction() == MotionEvent.ACTION_DOWN) {
                     //MeDevice.sharedManager().manualMode = true;
                     Log.d("mb", "port:" + port);
-                    if (v.equals(mLeftButton)) {
+                    if (v.equals(mLeftGripperBtn)) {
                         byte[] wr = buildWrite(DEV_DCMOTOR, port, slot, -motorSpeed);
                         mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
-                    } else if (v.equals(mRightButton)) {
+                    } else if (v.equals(mRightGripperBtn)) {
                         byte[] wr = buildWrite(DEV_DCMOTOR, port, slot, motorSpeed);
                         mHandler.obtainMessage(MSG_VALUECHANGED, wr).sendToTarget();
                     }
@@ -74,14 +76,13 @@ public class MeGripper extends MeModule {
                 return false;
             }
         };
-        mLeftButton.setClickable(true);
-        mRightButton.setClickable(true);
-        mLeftButton.setEnabled(true);
-        mRightButton.setEnabled(true);
+        mLeftGripperBtn.setClickable(true);
+        mRightGripperBtn.setClickable(true);
+        mLeftGripperBtn.setEnabled(true);
+        mRightGripperBtn.setEnabled(true);
 
-
-        mLeftButton.setOnTouchListener(touchListener);
-        mRightButton.setOnTouchListener(touchListener);
+        mLeftGripperBtn.setOnTouchListener(touchListener);
+        mRightGripperBtn.setOnTouchListener(touchListener);
 
         mSpeedLabel.setText("Speed:" + motorSpeed);
         mSpeedButton.setClickable(true);
@@ -99,7 +100,7 @@ public class MeGripper extends MeModule {
                     motorSpeed -= 4;
                 }
 
-                motorSpeed = motorSpeed > 255 ? 255 : (motorSpeed < 0 ? 0 : motorSpeed);
+                motorSpeed = motorSpeed > 255 ? 255 : (Math.max(motorSpeed, 0));
                 MeDevice.sharedManager().motorSpeed = motorSpeed;
                 mSpeedLabel.setText("Speed:" + motorSpeed);
                 return false;
@@ -115,15 +116,15 @@ public class MeGripper extends MeModule {
     }
 
     public void setDisable() {
-        mLeftButton = view.findViewById(R.id.leftButton);
-        mRightButton = view.findViewById(R.id.rightButton);
+        mLeftGripperBtn = view.findViewById(R.id.leftGripperBtn);
+        mRightGripperBtn = view.findViewById(R.id.rightGripperBtn);
         mSpeedButton = view.findViewById(R.id.speedButton);
         mSpeedLabel = view.findViewById(R.id.speedLabel);
         mPortLabel = view.findViewById(R.id.textPort);
-        mLeftButton.setClickable(false);
-        mRightButton.setClickable(false);
-        mLeftButton.setEnabled(false);
-        mRightButton.setEnabled(false);
+        mLeftGripperBtn.setClickable(false);
+        mRightGripperBtn.setClickable(false);
+        mLeftGripperBtn.setEnabled(false);
+        mRightGripperBtn.setEnabled(false);
         mSpeedButton.setClickable(false);
         mSpeedButton.setEnabled(false);
         mSpeedLabel.setText("Speed:" + motorSpeed);

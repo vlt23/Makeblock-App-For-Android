@@ -29,7 +29,6 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -72,12 +71,6 @@ public class LayoutView extends Activity {
 
     private LinearLayout.LayoutParams menuParams;
 
-    private float xDown;
-
-    private float xMove;
-
-    private float xUp;
-
     private boolean isMenuVisible;
 
     ImageButton addModBtn;
@@ -92,18 +85,19 @@ public class LayoutView extends Activity {
     LinearLayout popupLayout;
     RadioGroup portGroup;
     RadioGroup slotGroup;
-    RadioButton rPort1, rPort2, rPort3, rPort4, rPort5, rPort6, rPort7, rPort8, rPortM1, rPortM2;
+    RadioButton rPort1, rPort2, rPort3, rPort4, rPort5, rPort6, rPort7, rPort8,
+            rPort12;  // missing, check MeModule class
+    RadioButton rPortM1, rPortM2,
+            rPortM3;  // missing, check MeModule class
     RadioButton rSlot1, rSlot2;
 
     int boardType = BOARD_ARDUINO;
-    static float firmVersion = 0f;
 
     // bluetooth related
-    MenuItem blticon;
+    MenuItem bltIcon;
     Bluetooth blt;
     PopupWindow popupBtSelect;
     DeviceListAdapter devAdapter;
-    ArrayAdapter<String> pairAdapter;
 
     // Mscript related
     static final int STAGE_IDLE = 0; // the layout is editable in this state
@@ -112,7 +106,7 @@ public class LayoutView extends Activity {
     Timer mTimer;
     TimerTask mTimerTask;
     int queryListIndex;
-    private Matrix imageMatrix = new Matrix();
+    private final Matrix imageMatrix = new Matrix();
 
     public LayoutView() {
     }
@@ -206,7 +200,6 @@ public class LayoutView extends Activity {
             }
         });
 
-
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             blt = Bluetooth.sharedManager();
             blt.mHandler = mHandler;
@@ -219,8 +212,6 @@ public class LayoutView extends Activity {
                     R.layout.device_list_item);
             MeTimer.startWrite();
         }
-        //new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,blt.getBtDevList());
-//		pairAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,blt.getPairedList());
 
         disableAllModule();
     }
@@ -311,7 +302,8 @@ public class LayoutView extends Activity {
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
         popupWindow.setContentView(popupLayout);
-        popupWindow.showAtLocation(findViewById(R.id.content), Gravity.LEFT | Gravity.TOP, screenWidth / 4, screenHeight / 10 + 25);
+        popupWindow.showAtLocation(findViewById(R.id.content), Gravity.LEFT | Gravity.TOP,
+                screenWidth / 4, screenHeight / 10 + 25);
         popupWindow.setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -324,12 +316,14 @@ public class LayoutView extends Activity {
         rPort2 = popupLayout.findViewById(R.id.port2);
         rPort3 = popupLayout.findViewById(R.id.port3);
         rPort4 = popupLayout.findViewById(R.id.port4);
-        rPort5 = popupLayout.findViewById(R.id.port5);
-        rPort6 = popupLayout.findViewById(R.id.port6);
-        rPort7 = popupLayout.findViewById(R.id.port7);
-        rPort8 = popupLayout.findViewById(R.id.port8);
+//        rPort5 = popupLayout.findViewById(R.id.port5);
+//        rPort6 = popupLayout.findViewById(R.id.port6);
+//        rPort7 = popupLayout.findViewById(R.id.port7);
+//        rPort8 = popupLayout.findViewById(R.id.port8);
+        rPort12 = popupLayout.findViewById(R.id.port12);
         rPortM1 = popupLayout.findViewById(R.id.portm1);
         rPortM2 = popupLayout.findViewById(R.id.portm2);
+        rPortM3 = popupLayout.findViewById(R.id.portm3);
         switch (mod.port) {
             case MeModule.PORT_1:
                 rPort1.setChecked(true);
@@ -355,11 +349,17 @@ public class LayoutView extends Activity {
             case MeModule.PORT_8:
                 rPort8.setChecked(true);
                 break;
+            case MeModule.PORT_12:
+                rPort12.setChecked(true);
+                break;
             case MeModule.PORT_M1:
                 rPortM1.setChecked(true);
                 break;
             case MeModule.PORT_M2:
                 rPortM2.setChecked(true);
+                break;
+            case MeModule.PORT_M3:
+                rPortM3.setChecked(true);
                 break;
         }
 
@@ -384,7 +384,6 @@ public class LayoutView extends Activity {
                         rSlot2.setChecked(true);
                         break;
                 }
-
             }
             joystickTip.setVisibility(View.GONE);
         }
@@ -438,23 +437,29 @@ public class LayoutView extends Activity {
                 case R.id.port4:
                     mod.port = MeModule.PORT_4;
                     break;
-                case R.id.port5:
-                    mod.port = MeModule.PORT_5;
-                    break;
-                case R.id.port6:
-                    mod.port = MeModule.PORT_6;
-                    break;
-                case R.id.port7:
-                    mod.port = MeModule.PORT_7;
-                    break;
-                case R.id.port8:
-                    mod.port = MeModule.PORT_8;
+//                case R.id.port5:
+//                    mod.port = MeModule.PORT_5;
+//                    break;
+//                case R.id.port6:
+//                    mod.port = MeModule.PORT_6;
+//                    break;
+//                case R.id.port7:
+//                    mod.port = MeModule.PORT_7;
+//                    break;
+//                case R.id.port8:
+//                    mod.port = MeModule.PORT_8;
+//                    break;
+                case R.id.port12:
+                    mod.port = MeModule.PORT_12;
                     break;
                 case R.id.portm1:
                     mod.port = MeModule.PORT_M1;
                     break;
                 case R.id.portm2:
                     mod.port = MeModule.PORT_M2;
+                    break;
+                case R.id.portm3:
+                    mod.port = MeModule.PORT_M3;
                     break;
             }
             if (mod.shouldSelectSlot) {
@@ -467,16 +472,6 @@ public class LayoutView extends Activity {
                         mod.slot = MeModule.SLOT_2;
                         break;
                 }
-				/*
-				// inverse slot
-				case R.id.slot2:
-					mod.slot = MeModule.SLOT_1;
-					break;
-				case R.id.slot1:
-					mod.slot = MeModule.SLOT_2;
-					break;
-				}
-				*/
             }
 
             mod.setViewPortString(mod.port);
@@ -484,7 +479,6 @@ public class LayoutView extends Activity {
             saveLayout();
         }
     }
-
 
     class ModuleOnTouch implements OnTouchListener {
         private int lastX, lastY;
@@ -643,7 +637,6 @@ public class LayoutView extends Activity {
         map.put("dev", MeModule.DEV_PIRMOTION);
         list.add(map);
 
-
         return list;
     }
 
@@ -706,7 +699,6 @@ public class LayoutView extends Activity {
     }
 
     private void rotatoAddButton(int angle) {
-
         Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.add_button)).getBitmap();
         // …Ë÷√–˝◊™Ω«∂»
         imageMatrix.setRotate(angle);
@@ -732,12 +724,12 @@ public class LayoutView extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.layout, menu);
-        blticon = menu.findItem(R.id.action_bluetooth);
+        bltIcon = menu.findItem(R.id.action_bluetooth);
         if (blt == null) {
             return true;
         }
         if (blt.connDev != null) {
-            blticon.setIcon(R.drawable.bluetooth_on);
+            bltIcon.setIcon(R.drawable.bluetooth_on);
             Message msg = mHandler.obtainMessage(Bluetooth.MSG_CONNECTED);
             mHandler.sendMessage(msg);
         }
@@ -794,19 +786,18 @@ public class LayoutView extends Activity {
             switch (msg.what) {
                 case Bluetooth.MSG_CONNECTED: {
                     devListChanged();
-                    blticon.setIcon(R.drawable.bluetooth_on);
+                    bltIcon.setIcon(R.drawable.bluetooth_on);
                     Intent intent = new Intent(LayoutView.this, DialogActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("msg", getString(R.string.connected));
                     startActivity(intent);
-                    firmVersion = 0.0f;
                     startTimer(1000);
                 }
                 break;
                 case Bluetooth.MSG_DISCONNECTED:
                     stopTimer();
                     devListChanged();
-                    blticon.setIcon(R.drawable.bluetooth_off);
+                    bltIcon.setIcon(R.drawable.bluetooth_off);
                     boardType = BOARD_ARDUINO;
                     break;
                 case Bluetooth.MSG_CONNECT_FAIL: {
@@ -849,19 +840,18 @@ public class LayoutView extends Activity {
             switch (msg.what) {
                 case BluetoothLE.MSG_CONNECTED: {
                     devLEListChanged();
-                    blticon.setIcon(R.drawable.bluetooth_on);
+                    bltIcon.setIcon(R.drawable.bluetooth_on);
                     Intent intent = new Intent(LayoutView.this, DialogActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("msg", getString(R.string.connected));
                     startActivity(intent);
-                    firmVersion = 0.0f;
                     startTimer(1000);
                 }
                 break;
                 case BluetoothLE.MSG_DISCONNECTED:
                     stopTimer();
                     devLEListChanged();
-                    blticon.setIcon(R.drawable.bluetooth_off);
+                    bltIcon.setIcon(R.drawable.bluetooth_off);
                     boardType = BOARD_ARDUINO;
                     break;
                 case BluetoothLE.MSG_CONNECT_FAIL: {
@@ -917,7 +907,7 @@ public class LayoutView extends Activity {
         cmd[1] = (byte) 0x55;
         cmd[2] = (byte) 3;
         cmd[3] = (byte) MeModule.VERSION_INDEX;
-        cmd[4] = (byte) MeModule.READMODULE;
+        cmd[4] = (byte) MeModule.READ_MODULE;
         cmd[5] = (byte) 0;
         cmd[6] = (byte) '\n';
         if (blt != null) {
@@ -927,29 +917,16 @@ public class LayoutView extends Activity {
         }
     }
 
-    MeModule findModByVarReg(String reg) {
-        MeModule mod;
-        for (int i = 0; i < layout.moduleList.size(); i++) {
-            mod = layout.moduleList.get(i);
-            if (mod.varReg.equals(reg)) {
-                return mod;
-            }
-        }
-        return null;
-    }
-
     void parseMsg(int[] msg) {
-
-//			Log.d("mb", "parseMSG:"+msg.length);
+//		Log.d("mb", "parseMSG:"+msg.length);
         if (msg.length > 2) {
             if ((msg[2] & 0xff) == MeModule.VERSION_INDEX) {
                 int len = msg[4];
-                String hexStr = "";
+                StringBuilder hexStr = new StringBuilder();
                 for (int i = 0; i < len; i++) {
-                    hexStr += String.format("%c", msg[5 + i]);
+                    hexStr.append(String.format("%c", msg[5 + i]));
                 }
                 Log.d("mb", "version:" + hexStr);
-                firmVersion = 1.1f;
                 if (engineState == STAGE_IDLE) {
                     stopTimer();
                 }
@@ -959,7 +936,8 @@ public class LayoutView extends Activity {
                 float f = 0.0f;
                 if (msg[3] == 2) {
                     if (msg.length > 7) {
-                        int tint = (msg[4] & 0xff) + ((msg[5] & 0xff) << 8) + ((msg[6] & 0xff) << 16) + ((msg[7] & 0xff) << 24);
+                        int tint = (msg[4] & 0xff) + ((msg[5] & 0xff) << 8)
+                                + ((msg[6] & 0xff) << 16) + ((msg[7] & 0xff) << 24);
                         f = Float.intBitsToFloat(tint);
                     }
                 } else if (msg[3] == 1) {
@@ -976,7 +954,6 @@ public class LayoutView extends Activity {
                     MeModule mod = layout.moduleList.get(moduleIndex);
                     mod.setEchoValue("" + f);
                 }
-
             }
         }
     }
@@ -1011,11 +988,10 @@ public class LayoutView extends Activity {
         popupBtSelect.setOutsideTouchable(true);
         popupBtSelect.setFocusable(true);
         popupBtSelect.setContentView(popupBtDevLayout);
-        popupBtSelect.showAtLocation(findViewById(R.id.content), Gravity.LEFT | Gravity.TOP, screenWidth / 4, screenHeight / 10 + 25);
-        ListView devlist = (ListView) popupBtDevLayout.findViewById(R.id.btdevList);
-        //ListView pairlist = (ListView) popupBtDevLayout.findViewById(R.id.btpairList);
-        devlist.setAdapter(devAdapter);
-        //pairlist.setAdapter(pairAdapter);
+        popupBtSelect.showAtLocation(findViewById(R.id.content), Gravity.LEFT | Gravity.TOP,
+                screenWidth / 4, screenHeight / 10 + 25);
+        ListView devList = popupBtDevLayout.findViewById(R.id.btdevList);
+        devList.setAdapter(devAdapter);
 
         popupBtSelect.setOnDismissListener(new OnDismissListener() {
             @Override
@@ -1024,7 +1000,7 @@ public class LayoutView extends Activity {
             }
         });
 
-        devlist.setOnItemClickListener(new OnItemClickListener() {
+        devList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try { // the bluetooth list may vary

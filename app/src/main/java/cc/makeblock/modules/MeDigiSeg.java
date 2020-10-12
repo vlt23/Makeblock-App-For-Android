@@ -1,6 +1,7 @@
 package cc.makeblock.modules;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -95,7 +96,7 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
         }
     }
 
-    final Handler updateTime = new Handler() {
+    final Handler updateTime = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             String dts = (String) msg.obj;

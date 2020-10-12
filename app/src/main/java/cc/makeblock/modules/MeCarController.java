@@ -2,6 +2,7 @@ package cc.makeblock.modules;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,8 +27,8 @@ public class MeCarController extends MeModule {
     private ImageButton mSpeedButton;
     private TextView mSpeedLabel;
     private int motorSpeed = 180;
-    private Handler mStopHandler = new Handler();
-    private Runnable mStopRunnable = new Runnable() {
+    private final Handler mStopHandler = new Handler(Looper.getMainLooper());
+    private final Runnable mStopRunnable = new Runnable() {
         @Override
         public void run() {
             byte[] wr = buildJoystickWrite(DEV_JOYSTICK, 0, 0);

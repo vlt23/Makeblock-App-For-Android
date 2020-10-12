@@ -16,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
@@ -771,9 +772,8 @@ public class LayoutView extends Activity {
         return true;
     }
 
-    // --------------- BULETOOTH BELOW ---------------------
-    @SuppressLint("HandlerLeak")
-    final Handler mHandler = new Handler() {
+    // --------------- BLUETOOTH BELOW ---------------------
+    final Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -826,8 +826,8 @@ public class LayoutView extends Activity {
             }
         }
     };
-    @SuppressLint("HandlerLeak")
-    final Handler mLeHandler = new Handler() {
+
+    final Handler mLeHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {

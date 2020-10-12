@@ -1,5 +1,6 @@
 package cc.makeblock.modules;
 
+import android.os.Looper;
 import org.json.JSONObject;
 
 import android.os.Handler;
@@ -12,8 +13,8 @@ public class MeDcMotor extends MeModule implements SeekBar.OnSeekBarChangeListen
     static String devName = "dcmotor";
     SeekBar slider;
     TextView valueTxt;
-    private Handler mStopHandler = new Handler();
-    private Runnable mStopRunnable = new Runnable() {
+    private final Handler mStopHandler = new Handler(Looper.getMainLooper());
+    private final Runnable mStopRunnable = new Runnable() {
         @Override
         public void run() {
             byte[] wr = buildWrite(type, port, slot, 0);
@@ -53,7 +54,6 @@ public class MeDcMotor extends MeModule implements SeekBar.OnSeekBarChangeListen
                                   boolean fromUser) {
         int value = progress - 256;
         if (valueTxt != null) {
-
             if (System.currentTimeMillis() - cTime > 100) {
                 cTime = System.currentTimeMillis();
                 valueTxt.setText(value);

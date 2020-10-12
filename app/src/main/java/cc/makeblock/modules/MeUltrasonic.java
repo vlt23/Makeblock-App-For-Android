@@ -1,6 +1,7 @@
 package cc.makeblock.modules;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
@@ -14,7 +15,7 @@ import cc.makeblock.makeblock.R;
 public class MeUltrasonic extends MeModule {
     static String devName = "ultrasonic";
     private ToggleButton toggleBt;
-    private final Handler mLoopHandler = new Handler();
+    private final Handler mLoopHandler = new Handler(Looper.getMainLooper());
 
     public MeUltrasonic(int port, int slot) {
         super(devName, MeModule.DEV_ULTRASONIC, port, slot);

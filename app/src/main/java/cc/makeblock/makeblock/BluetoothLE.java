@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -70,22 +71,19 @@ public class BluetoothLE extends Service {
     public void setup(Context context) {
         mDevices = new LeDeviceListAdapter();
         mContext = context;
-        mHandler = new Handler();
-        final BluetoothManager bluetoothManager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
+        mHandler = new Handler(Looper.getMainLooper());
+        final BluetoothManager bluetoothManager = (BluetoothManager) mContext.getSystemService(
+                Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-        //��������  
         mBluetoothAdapter.enable();
 
         mBLE = new BluetoothLeClass(mContext);
         if (!mBLE.initialize()) {
             Log.e(TAG, "Unable to initialize Bluetooth");
         }
-        //����BLE�ն˵�Serviceʱ�ص�  
         mBLE.setOnServiceDiscoverListener(mOnServiceDiscover);
-        //�յ�BLE�ն����ݽ������¼�  
         mBLE.setOnDataAvailableListener(mOnDataAvailable);
-
     }
 
     public void start() {
@@ -167,7 +165,8 @@ public class BluetoothLE extends Service {
     }
 
     public boolean writeSingleBuffer() {
-        BluetoothGattCharacteristic ch = characteristicForProperty(BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE);
+        BluetoothGattCharacteristic ch = characteristicForProperty(
+                BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE);
         if (ch != null) {
             if (mBuffersIndex > 0) {
                 int len = Math.min(mBuffersIndex, 20);
@@ -197,7 +196,8 @@ public class BluetoothLE extends Service {
     }
 
     private void resetLow() {
-        BluetoothGattCharacteristic ch = characteristicForProperty(BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_READ);
+        BluetoothGattCharacteristic ch = characteristicForProperty(BluetoothGattCharacteristic.PROPERTY_WRITE
+                | BluetoothGattCharacteristic.PROPERTY_READ);
         if (ch != null) {
             byte[] buf = {0};
             ch.setValue(buf);
@@ -207,7 +207,8 @@ public class BluetoothLE extends Service {
     }
 
     private void resetHigh() {
-        BluetoothGattCharacteristic ch = characteristicForProperty(BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_READ);
+        BluetoothGattCharacteristic ch = characteristicForProperty(BluetoothGattCharacteristic.PROPERTY_WRITE
+                | BluetoothGattCharacteristic.PROPERTY_READ);
         if (ch != null) {
             byte[] buf = {1};
             ch.setValue(buf);
@@ -218,7 +219,7 @@ public class BluetoothLE extends Service {
     }
 
     private int resetIndex = 0;
-    Handler resetHandler = new Handler();
+    Handler resetHandler = new Handler(Looper.getMainLooper());
     Runnable resetRunnable = new Runnable() {
         @Override
         public void run() {
@@ -316,11 +317,10 @@ public class BluetoothLE extends Service {
             }
         }
     };
-    private OnServiceDiscoverListener mOnServiceDiscover = new OnServiceDiscoverListener() {
+    private final OnServiceDiscoverListener mOnServiceDiscover = new OnServiceDiscoverListener() {
 
         public void onServiceDiscover(BluetoothGatt gatt) {
             displayGattServices(mBLE.getSupportedGattServices());
-
         }
     };
 
@@ -348,7 +348,7 @@ public class BluetoothLE extends Service {
          */
         byte[] buffer = new byte[1024];
         int bytesLen;
-        private List<Integer> mRx = new ArrayList<>();
+        private final List<Integer> mRx = new ArrayList<>();
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt,
@@ -386,7 +386,7 @@ public class BluetoothLE extends Service {
     };
 
     // Device scan callback.  
-    private LeScanCallback mLeScanCallback =
+    private final LeScanCallback mLeScanCallback =
             new LeScanCallback() {
 
                 @Override
@@ -433,38 +433,38 @@ public class BluetoothLE extends Service {
                 if ((gattCharacteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
                     mBLE.setCharacteristicNotification(gattCharacteristic, true);
                 }
-                //UUID_KEY_DATA�ǿ��Ը�����ģ�鴮��ͨ�ŵ�Characteristic  
-//                if(gattCharacteristic.getUuid().toString().equals(UUID_KEY_DATA)){                    
+                //UUID_KEY_DATA�ǿ��Ը�����ģ�鴮��ͨ�ŵ�Characteristic
+//                if(gattCharacteristic.getUuid().toString().equals(UUID_KEY_DATA)){
                 //���Զ�ȡ��ǰCharacteristic���ݣ��ᴥ��mOnDataAvailable.onCharacteristicRead()
-//                    mHandler.postDelayed(new Runnable() {  
-//                        @Override  
-//                        public void run() {  
-//                            mBLE.readCharacteristic(gattCharacteristic);  
-//                        }  
-//                    }, 500);  
+//                    mHandler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            mBLE.readCharacteristic(gattCharacteristic);
+//                        }
+//                    }, 500);
 
                 //����Characteristic��д��֪ͨ,�յ�����ģ������ݺ�ᴥ��mOnDataAvailable.onCharacteristicWrite()
 //                	if((gattCharacteristic.getProperties()&BluetoothGattCharacteristic.PROPERTY_NOTIFY)==BluetoothGattCharacteristic.PROPERTY_NOTIFY){
-//                		mBLE.setCharacteristicNotification(gattCharacteristic, true);  
+//                		mBLE.setCharacteristicNotification(gattCharacteristic, true);
 //                	}
                 //������������
-//                    gattCharacteristic.setValue("send data->");  
+//                    gattCharacteristic.setValue("send data->");
                 //������ģ��д������
-//                    mBLE.writeCharacteristic(gattCharacteristic);  
-//                }  
+//                    mBLE.writeCharacteristic(gattCharacteristic);
+//                }
 
-                //-----Descriptors���ֶ���Ϣ-----//  
-//                List<BluetoothGattDescriptor> gattDescriptors = gattCharacteristic.getDescriptors();  
-//                for (BluetoothGattDescriptor gattDescriptor : gattDescriptors) {  
-//                    Log.e(TAG, "-------->desc uuid:" + gattDescriptor.getUuid());  
-//                    int descPermission = gattDescriptor.getPermissions();  
-//                    Log.e(TAG,"-------->desc permission:"+ Utils.getDescPermission(descPermission));  
-//                    
-//                    byte[] desData = gattDescriptor.getValue();  
-//                    if (desData != null && desData.length > 0) {  
-//                        Log.e(TAG, "-------->desc value:"+ new String(desData));  
-//                    }  
-//                 }  
+                //-----Descriptors���ֶ���Ϣ-----//
+//                List<BluetoothGattDescriptor> gattDescriptors = gattCharacteristic.getDescriptors();
+//                for (BluetoothGattDescriptor gattDescriptor : gattDescriptors) {
+//                    Log.e(TAG, "-------->desc uuid:" + gattDescriptor.getUuid());
+//                    int descPermission = gattDescriptor.getPermissions();
+//                    Log.e(TAG,"-------->desc permission:"+ Utils.getDescPermission(descPermission));
+//
+//                    byte[] desData = gattDescriptor.getValue();
+//                    if (desData != null && desData.length > 0) {
+//                        Log.e(TAG, "-------->desc value:"+ new String(desData));
+//                    }
+//                 }
             }
         }
 

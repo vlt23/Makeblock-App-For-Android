@@ -2,6 +2,7 @@ package cc.makeblock.modules;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.widget.CompoundButton;
@@ -58,8 +59,7 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
         if (view == null) {
             return;
         }
-        uiHandler = new Handler() {
-
+        uiHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {

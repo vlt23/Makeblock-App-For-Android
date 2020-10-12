@@ -1,6 +1,7 @@
 package cc.makeblock.modules;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,8 +22,8 @@ public class MeGripper extends MeModule {
     private TextView mPortLabel;
     private int motorSpeed = 100;
 
-    private Handler mStopHandler = new Handler();
-    private Runnable mStopRunnable = new Runnable() {
+    private final Handler mStopHandler = new Handler(Looper.getMainLooper());
+    private final Runnable mStopRunnable = new Runnable() {
         @Override
         public void run() {
             byte[] wr = buildWrite(DEV_DCMOTOR, port, slot, 0);
@@ -36,8 +37,8 @@ public class MeGripper extends MeModule {
         this.scale = 1.33f;
     }
 
-    public MeGripper(JSONObject jobj) {
-        super(jobj);
+    public MeGripper(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_gripper_controller;
         this.scale = 1.33f;
     }

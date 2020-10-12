@@ -1,12 +1,13 @@
 package cc.makeblock.makeblock;
 
 import android.os.Handler;
+import android.os.Looper;
 
 public class MeTimer {
     private static byte[] mToSend;
-    private static Handler mHandler = new Handler();
-    private static Handler mLoopHandler = new Handler();
-    private static Runnable mRunnable = new Runnable() {
+    private static final Handler mHandler = new Handler(Looper.getMainLooper());
+    private static final Handler mLoopHandler = new Handler(Looper.getMainLooper());
+    private static final Runnable mRunnable = new Runnable() {
 
         @Override
         public void run() {
@@ -17,7 +18,7 @@ public class MeTimer {
         }
     };
     private static boolean isLoop = false;
-    private static Runnable mLoopRunnable = new Runnable() {
+    private static final Runnable mLoopRunnable = new Runnable() {
 
         @Override
         public void run() {
@@ -32,9 +33,6 @@ public class MeTimer {
 
     public static void delayWrite(byte[] toSend, int delay) {
         mToSend = toSend;
-        if (mHandler == null) {
-            mHandler = new Handler();
-        }
 //		Log.d("mb", "start delay");
         mHandler.postDelayed(mRunnable, delay);
     }
@@ -44,4 +42,5 @@ public class MeTimer {
             mLoopHandler.postDelayed(mLoopRunnable, 60);
         }
     }
+
 }

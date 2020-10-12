@@ -63,9 +63,9 @@ public class MeCarController extends MeModule {
         mLeftDownButton.setEnabled(true);
         mRightDownButton.setEnabled(true);
         View.OnTouchListener touchListener = new View.OnTouchListener() {
-
             @Override
             public boolean onTouch(View v, MotionEvent evt) {
+                v.performClick();
                 if (evt.getAction() == MotionEvent.ACTION_UP) {
                     MeDevice.sharedManager().manualMode = false;
                     byte[] wr = buildJoystickWrite(DEV_JOYSTICK, 0, 0);
@@ -128,8 +128,8 @@ public class MeCarController extends MeModule {
         mSpeedButton.setEnabled(true);
         mSpeedButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View arg0, MotionEvent evt) {
-                int x = (int) evt.getX();
+            public boolean onTouch(View v, MotionEvent evt) {
+                v.performClick();
                 int y = (int) evt.getY();
                 //Log.d("mb", ""+x+":"+y);
                 if (y < 48) {
@@ -146,7 +146,6 @@ public class MeCarController extends MeModule {
             }
         });
         mSpeedButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
                 Log.d("mb", "speed");

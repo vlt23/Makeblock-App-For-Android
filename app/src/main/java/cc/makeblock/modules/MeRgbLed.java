@@ -35,6 +35,7 @@ public class MeRgbLed extends MeModule implements OnTouchListener {
         this.scale = 1.0f;
     }
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         hue = view.findViewById(R.id.rgbColorPick);
@@ -43,6 +44,7 @@ public class MeRgbLed extends MeModule implements OnTouchListener {
         mask = view.findViewById(R.id.rgbMask);
     }
 
+    @Override
     public void setDisable() {
         if (hue != null)
             hue.setOnTouchListener(null);
@@ -50,6 +52,7 @@ public class MeRgbLed extends MeModule implements OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        v.performClick();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
@@ -79,6 +82,7 @@ public class MeRgbLed extends MeModule implements OnTouchListener {
     }
 
     //rgbrun(%@,%@,%c)
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return "rgbrun(" + getPortString(port) + "," + getSlotString(slot) + "," + var + ")\n";
@@ -94,4 +98,5 @@ public class MeRgbLed extends MeModule implements OnTouchListener {
             mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
         }
     }
+
 }

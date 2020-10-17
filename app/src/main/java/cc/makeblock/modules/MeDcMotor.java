@@ -34,6 +34,7 @@ public class MeDcMotor extends MeModule implements SeekBar.OnSeekBarChangeListen
         imageId = R.drawable.motor;
     }
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         valueTxt = view.findViewById(R.id.slideBarValue);
@@ -42,6 +43,7 @@ public class MeDcMotor extends MeModule implements SeekBar.OnSeekBarChangeListen
         slider.setProgress(256);
     }
 
+    @Override
     public void setDisable() {
         slider = view.findViewById(R.id.sliderBar);
         slider.setOnSeekBarChangeListener(null);
@@ -73,6 +75,7 @@ public class MeDcMotor extends MeModule implements SeekBar.OnSeekBarChangeListen
     }
 
     //dcrun(%@,%c)
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return "dcrun(" + getPortString(port) + "," + var + ")\n";

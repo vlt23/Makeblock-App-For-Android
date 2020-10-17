@@ -15,21 +15,24 @@ public class MePIRSensor extends MeModule {
         imageId = R.drawable.pirmotion;
     }
 
-    public MePIRSensor(JSONObject jobj) {
-        super(jobj);
+    public MePIRSensor(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_switch_view;
         imageId = R.drawable.pirmotion;
     }
 
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return var + " = pirsensor(" + getPortString(port) + ")\n";
     }
 
+    @Override
     public byte[] getQuery(int index) {
         return buildQuery(type, port, slot, index);
     }
 
+    @Override
     public void setEchoValue(String value) {
         int v = (int) Float.parseFloat(value);
         ImageView img = view.findViewById(R.id.switchImg);

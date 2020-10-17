@@ -51,6 +51,7 @@ public class MeCarController extends MeModule {
     long ctime = System.currentTimeMillis();
 
     @SuppressLint("ClickableViewAccessibility")
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         findAllViewById();
@@ -165,6 +166,7 @@ public class MeCarController extends MeModule {
         mSpeedButton = view.findViewById(R.id.speedButton);
     }
 
+    @Override
     public void setDisable() {
         findAllViewById();
         mLeftUpButton.setOnClickListener(null);

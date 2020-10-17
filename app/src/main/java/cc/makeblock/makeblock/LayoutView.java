@@ -1,6 +1,5 @@
 package cc.makeblock.makeblock;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -41,7 +40,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
+import cc.makeblock.modules.MeModule;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,12 +52,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cc.makeblock.modules.MeModule;
-
 public class LayoutView extends Activity {
     static final String dbg = "LayoutView";
     static final int BOARD_ARDUINO = 0;
-    private Context mContext;
 
     private int screenWidth, screenHeight;
 
@@ -115,7 +111,6 @@ public class LayoutView extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
         setContentView(R.layout.activity_layout);
         layouts = new LocalLayout(this);
         contentView = findViewById(R.id.content);
@@ -399,7 +394,7 @@ public class LayoutView extends Activity {
         }
 
         @Override
-        public void onClick(View arg0) {
+        public void onClick(View v) {
             Log.i(dbg, "delete module " + mod.name);
             contentView.removeView(mod.view);
             layout.moduleList.remove(mod);
@@ -416,7 +411,7 @@ public class LayoutView extends Activity {
         }
 
         @Override
-        public void onClick(View arg0) {
+        public void onClick(View v) {
             int id = portGroup.getCheckedRadioButtonId();
             switch (id) {
                 case R.id.port1:
@@ -485,6 +480,7 @@ public class LayoutView extends Activity {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+            v.performClick();
             if (engineState > STAGE_IDLE) return false;
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -498,8 +494,6 @@ public class LayoutView extends Activity {
                     int dy = (int) event.getRawY() - lastY;
                     int left = v.getLeft() + dx;
                     int top = v.getTop() + dy;
-                    int right = v.getRight() + dx;
-                    int bottom = v.getBottom() + dy;
                     FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) v.getLayoutParams();
                     params.topMargin = top;
                     params.leftMargin = left;
@@ -641,14 +635,10 @@ public class LayoutView extends Activity {
         content = findViewById(R.id.content);
         menu = findViewById(R.id.menu);
         menuParams = (LinearLayout.LayoutParams) menu.getLayoutParams();
-        // Ω´menuµƒøÌ∂»…Ë÷√Œ™∆¡ƒªøÌ∂»ºı»•menuPadding  
-        //menuParams.width = screenWidth - menuPadding;  
+        //menuParams.width = screenWidth - menuPadding;
         menuParams.width = (int) (screenWidth * 0.3);
-        // ◊Û±ﬂ‘µµƒ÷µ∏≥÷µŒ™menuøÌ∂»µƒ∏∫ ˝  
         leftEdge = -menuParams.width;
-        // menuµƒleftMargin…Ë÷√Œ™◊Û±ﬂ‘µµƒ÷µ£¨’‚—˘≥ı ºªØ ±menuæÕ±‰Œ™≤ªø…º˚  
         menuParams.leftMargin = leftEdge;
-        // Ω´contentµƒøÌ∂»…Ë÷√Œ™∆¡ƒªøÌ∂»  
         content.getLayoutParams().width = screenWidth;
     }
 
@@ -657,7 +647,6 @@ public class LayoutView extends Activity {
         @Override
         protected Integer doInBackground(Integer... speed) {
             int leftMargin = menuParams.leftMargin;
-            // ∏˘æ›¥´»ÎµƒÀŸ∂»¿¥πˆ∂ØΩÁ√Ê£¨µ±πˆ∂ØµΩ¥Ô◊Û±ﬂΩÁªÚ”“±ﬂΩÁ ±£¨Ã¯≥ˆ—≠ª∑°£
             while (true) {
                 leftMargin = leftMargin + speed[0];
                 if (leftMargin > rightEdge) {
@@ -669,7 +658,6 @@ public class LayoutView extends Activity {
                     break;
                 }
                 publishProgress(leftMargin);
-                // Œ™¡À“™”–πˆ∂Ø–ßπ˚≤˙…˙£¨√ø¥Œ—≠ª∑ πœﬂ≥ÃÀØ√ﬂ20∫¡√Î£¨’‚—˘»‚—€≤≈ƒ‹πªø¥µΩπˆ∂Ø∂Øª≠°£
                 sleep(20);
             }
             isMenuVisible = speed[0] > 0;
@@ -681,31 +669,24 @@ public class LayoutView extends Activity {
         protected void onProgressUpdate(Integer... leftMargin) {
             menuParams.leftMargin = leftMargin[0];
             menu.setLayoutParams(menuParams);
-            rotatoAddButton(45 + leftMargin[0] * 45 / (rightEdge - leftEdge));
+            rotateAddButton(45 + leftMargin[0] * 45 / (rightEdge - leftEdge));
         }
 
         @Override
         protected void onPostExecute(Integer leftMargin) {
             menuParams.leftMargin = leftMargin;
             menu.setLayoutParams(menuParams);
-            rotatoAddButton(45 + leftMargin * 45 / (rightEdge - leftEdge));
+            rotateAddButton(45 + leftMargin * 45 / (rightEdge - leftEdge));
         }
     }
 
-    private void rotatoAddButton(int angle) {
-        Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.add_button)).getBitmap();
-        // …Ë÷√–˝◊™Ω«∂»
+    private void rotateAddButton(int angle) {
+        Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.add_button, null)).getBitmap();
         imageMatrix.setRotate(angle);
-        // ÷ÿ–¬ªÊ÷∆Bitmap
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), imageMatrix, true);
         addModBtn.setImageBitmap(bitmap);
     }
 
-    /**
-     *  πµ±«∞œﬂ≥ÃÀØ√ﬂ÷∏∂®µƒ∫¡√Î ˝°£
-     *
-     * @param millis ÷∏∂®µ±«∞œﬂ≥ÃÀØ√ﬂ∂‡æ√£¨“‘∫¡√ÎŒ™µ•Œª
-     */
     private void sleep(long millis) {
         try {
             Thread.sleep(millis);
@@ -740,8 +721,6 @@ public class LayoutView extends Activity {
         } else {
             BluetoothLE.sharedManager().close();
         }
-//			this.unregisterReceiver(mBTDevDiscover);
-
     }
 
     @Override
@@ -925,7 +904,9 @@ public class LayoutView extends Activity {
                 }
             } else {
                 int moduleIndex = msg[2];
-                if (msg.length < 7) return;
+                if (msg.length < 7) {
+                    return;
+                }
                 float f = 0.0f;
                 if (msg[3] == 2) {
                     if (msg.length > 7) {

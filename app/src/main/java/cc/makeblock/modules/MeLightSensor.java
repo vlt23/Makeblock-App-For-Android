@@ -20,17 +20,19 @@ public class MeLightSensor extends MeModule implements OnCheckedChangeListener {
         imageId = R.drawable.lightsensor;
     }
 
-    public MeLightSensor(JSONObject jobj) {
-        super(jobj);
+    public MeLightSensor(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_value_check;
         imageId = R.drawable.lightsensor;
     }
 
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return var + " = lightsensor(" + getPortString(port) + ")\n";
     }
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         ledCheck = view.findViewById(R.id.ledCheck);
@@ -45,15 +47,18 @@ public class MeLightSensor extends MeModule implements OnCheckedChangeListener {
         }
     }
 
+    @Override
     public void setDisable() {
         ledCheck = view.findViewById(R.id.ledCheck);
         ledCheck.setEnabled(false);
     }
 
+    @Override
     public byte[] getQuery(int index) {
         return buildQuery(type, port, slot, index);
     }
 
+    @Override
     public void setEchoValue(String value) {
         TextView txt = view.findViewById(R.id.textValue);
         txt.setText(value + " lux");
@@ -61,13 +66,13 @@ public class MeLightSensor extends MeModule implements OnCheckedChangeListener {
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        byte[] wr;
         if (isChecked) {
-            byte[] wr = buildWrite(type, port, slot, 1);
-            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
+            wr = buildWrite(type, port, slot, 1);
         } else {
-            byte[] wr = buildWrite(type, port, slot, 0);
-            mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
+            wr = buildWrite(type, port, slot, 0);
         }
+        mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
     }
 
 }

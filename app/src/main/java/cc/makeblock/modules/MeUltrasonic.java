@@ -17,36 +17,41 @@ public class MeUltrasonic extends MeModule {
     private ToggleButton toggleBt;
     private final Handler mLoopHandler = new Handler(Looper.getMainLooper());
 
+    private boolean isAuto = false;
+    private float mCurrentValue = 0.0f;
+
     public MeUltrasonic(int port, int slot) {
         super(devName, MeModule.DEV_ULTRASONIC, port, slot);
         viewLayout = R.layout.dev_auto_driver;
         imageId = R.drawable.ultrasonic;
     }
 
-    public MeUltrasonic(JSONObject jobj) {
-        super(jobj);
+    public MeUltrasonic(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_auto_driver;
         imageId = R.drawable.ultrasonic;
     }
 
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return var + " = distance(" + getPortString(port) + ")\n";
     }
 
+    @Override
     public byte[] getQuery(int index) {
         return buildQuery(type, port, slot, index);
     }
 
-    private int motorSpeed = 0;
     private int mBackTime = 0;
     private int mFrontTime = 0;
     private final Runnable mRunnable = new Runnable() {
+        @Override
         public void run() {
             if (isAuto) {
                 mLoopHandler.postDelayed(this, 100);
                 if (view != null) {
-                    motorSpeed = MeDevice.sharedManager().motorSpeed;
+                    int motorSpeed = MeDevice.sharedManager().motorSpeed;
                     if (!MeDevice.sharedManager().manualMode) {
                         if ((mCurrentValue > 0.0 && mCurrentValue < 40) || mBackTime > 0) {
                             if (mBackTime < 5) {
@@ -82,8 +87,8 @@ public class MeUltrasonic extends MeModule {
             }
         }
     };
-    private boolean isAuto = false;
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         toggleBt = view.findViewById(R.id.autoSwitch);
@@ -104,13 +109,13 @@ public class MeUltrasonic extends MeModule {
         toggleBt.setOnCheckedChangeListener(listener);
     }
 
+    @Override
     public void setDisable() {
         toggleBt = view.findViewById(R.id.autoSwitch);
         toggleBt.setOnCheckedChangeListener(null);
     }
 
-    private float mCurrentValue = 0.0f;
-
+    @Override
     public void setEchoValue(String value) {
         TextView txt = view.findViewById(R.id.textValue);
         mCurrentValue = Float.parseFloat(value);

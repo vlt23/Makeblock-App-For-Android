@@ -1,6 +1,5 @@
 package cc.makeblock.modules;
 
-import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,7 +17,6 @@ import java.util.TimerTask;
 
 import cc.makeblock.makeblock.R;
 
-@SuppressLint("NewApi")
 public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListener {
     static String devName = "shutter";
     private EditText intervalText;
@@ -40,13 +38,14 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
         setEnable(null);
     }
 
-    public MeShutter(JSONObject jobj) {
-        super(jobj);
+    public MeShutter(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_shutter;
         imageId = R.drawable.shutter;
         shouldSelectSlot = true;
         mTimer = new Timer();
         mTask = new TimerTask() {
+            @Override
             public void run() {
                 doShutter();
             }
@@ -54,6 +53,7 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
         setEnable(null);
     }
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         if (view == null) {
@@ -79,7 +79,6 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
         startText = view.findViewById(R.id.startText);
         startSwitch = view.findViewById(R.id.startSwitch);
         OnCheckedChangeListener listener = new OnCheckedChangeListener() {
-
             @Override
             public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
                 mIndex = 0;
@@ -99,8 +98,9 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
                         mTimer.schedule(mTask, interval, during);
                     }
                 } else {
-                    if (mTimer != null)
+                    if (mTimer != null) {
                         mTimer.cancel();
+                    }
                 }
             }
         };
@@ -125,6 +125,7 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
         }
     }
 
+    @Override
     public void setDisable() {
     }
 
@@ -143,12 +144,14 @@ public class MeShutter extends MeModule implements SeekBar.OnSeekBarChangeListen
     }
 
     //@"servorun(%d,%c)\n",servoCount,variableChar
+    @Override
     public String getScriptRun(String var) {
 //		varReg = var;
         return "shutter()\n";
     }
 
     //@"servoattach(%@,%@,%d)\n",portStr,slotStr,servoCount]
+    @Override
     public String getScriptSetup() {
 //		servoIndex = servoCount++;
         return "shutter()\n";

@@ -16,23 +16,26 @@ public class MeLimitSwitch extends MeModule {
         shouldSelectSlot = true;
     }
 
-    public MeLimitSwitch(JSONObject jobj) {
-        super(jobj);
+    public MeLimitSwitch(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_switch_view;
         imageId = R.drawable.limitswitch;
         shouldSelectSlot = true;
     }
 
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return var + " = limitswitch(" + getPortString(port) + "," + getSlotString(slot) + ")\n";
     }
 
+    @Override
     public byte[] getQuery(int index) {
         // todo: add limit switch to firmware
         return buildQuery(DEV_LINEFOLLOWER, port, slot, index);
     }
 
+    @Override
     public void setEchoValue(String value) {
         int v = (int) Float.parseFloat(value);
         ImageView img = view.findViewById(R.id.switchImg);

@@ -15,21 +15,24 @@ public class MeLineFollower extends MeModule {
         imageId = R.drawable.linefinder;
     }
 
-    public MeLineFollower(JSONObject jobj) {
-        super(jobj);
+    public MeLineFollower(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_linefind_view;
         imageId = R.drawable.linefinder;
     }
 
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return var + " = linefinder(" + getPortString(port) + ")\n";
     }
 
+    @Override
     public byte[] getQuery(int index) {
         return buildQuery(type, port, slot, index);
     }
 
+    @Override
     public void setEchoValue(String value) {
         int v = (int) Float.parseFloat(value);
         ImageView imgL = view.findViewById(R.id.imgLeft);
@@ -53,4 +56,5 @@ public class MeLineFollower extends MeModule {
                 break;
         }
     }
+
 }

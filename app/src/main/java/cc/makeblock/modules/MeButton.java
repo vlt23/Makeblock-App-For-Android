@@ -21,16 +21,19 @@ public class MeButton extends MeModule {
         imageId = R.drawable.button;
     }
 
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return var + " = button(" + getPortString(port) + ")\n";
     }
 
+    @Override
     public byte[] getQuery(int index) {
         // use the lightsensor type to read adc value
         return buildQuery(DEV_LIGHTSENSOR, port, slot, index);
     }
 
+    @Override
     public void setEchoValue(String value) {
         float adc = Float.parseFloat(value);
         TextView txt = view.findViewById(R.id.textValue);

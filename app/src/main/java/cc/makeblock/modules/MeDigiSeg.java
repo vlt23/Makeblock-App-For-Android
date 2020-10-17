@@ -32,12 +32,13 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
         imageId = R.drawable.sevseg;
     }
 
-    public MeDigiSeg(JSONObject jobj) {
-        super(jobj);
+    public MeDigiSeg(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_edit_view;
         imageId = R.drawable.sevseg;
     }
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         ed = view.findViewById(R.id.editTxt);
@@ -52,6 +53,7 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
         sendNumber(ed.getText().toString());
     }
 
+    @Override
     public void setDisable() {
         ed = view.findViewById(R.id.editTxt);
         ed.setEnabled(false);
@@ -60,13 +62,16 @@ public class MeDigiSeg extends MeModule implements TextWatcher, OnCheckedChangeL
     }
 
     //digiseg(%@,%c)
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return "digiseg(" + getPortString(port) + "," + var + ")\n";
     }
 
     void sendNumber(String str) {
-        if (str.equals("")) str = "0";
+        if (str.equals("")) {
+            str = "0";
+        }
         float number = Float.parseFloat(str);
         byte[] wr = buildWrite(type, port, slot, number);
         mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();

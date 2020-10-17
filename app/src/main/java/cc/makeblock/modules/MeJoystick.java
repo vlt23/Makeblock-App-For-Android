@@ -27,26 +27,32 @@ public class MeJoystick extends MeModule implements OnTouchListener {
         this.scale = 0.9f;
     }
 
-    public MeJoystick(JSONObject jobj) {
-        super(jobj);
+    public MeJoystick(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_joystick_view;
         this.scale = 0.9f;
     }
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
-        if (view == null) return;
+        if (view == null) {
+            return;
+        }
         bar = view.findViewById(R.id.joystickBar);
         initTop = bar.getTop();
         initLeft = bar.getLeft();
         bar.setOnTouchListener(this);
     }
 
+    @Override
     public void setDisable() {
-        if (bar != null)
+        if (bar != null) {
             bar.setOnTouchListener(null);
+        }
     }
 
+    @Override
     public String getScriptRun(String var, String var2) {
         varReg = var;
         varReg2 = var2;
@@ -54,7 +60,9 @@ public class MeJoystick extends MeModule implements OnTouchListener {
     }
 
     void sendXY(int x, int y) {
-        if (mHandler == null) return;
+        if (mHandler == null) {
+            return;
+        }
         //Log.i(dbg, "joystick x="+x+" y="+y);
 
         int dx = -x + 100;
@@ -78,6 +86,7 @@ public class MeJoystick extends MeModule implements OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        v.performClick();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 lastX = (int) event.getRawX();
@@ -91,10 +100,18 @@ public class MeJoystick extends MeModule implements OnTouchListener {
                 int dy = (int) event.getRawY() - lastY;
                 int left = v.getLeft() + dx;
                 int top = v.getTop() + dy;
-                if (left < 0) left = 0;
-                if (left > 200) left = 200;
-                if (top < 0) top = 0;
-                if (top > 200) top = 200;
+                if (left < 0) {
+                    left = 0;
+                }
+                if (left > 200) {
+                    left = 200;
+                }
+                if (top < 0) {
+                    top = 0;
+                }
+                if (top > 200) {
+                    top = 200;
+                }
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) v.getLayoutParams();
                 params.gravity = Gravity.START | Gravity.TOP;
                 params.topMargin = top;

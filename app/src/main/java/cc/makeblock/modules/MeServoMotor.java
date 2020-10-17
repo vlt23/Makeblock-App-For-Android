@@ -22,13 +22,14 @@ public class MeServoMotor extends MeModule implements SeekBar.OnSeekBarChangeLis
         shouldSelectSlot = true;
     }
 
-    public MeServoMotor(JSONObject jobj) {
-        super(jobj);
+    public MeServoMotor(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_slider_view;
         imageId = R.drawable.servo;
         shouldSelectSlot = true;
     }
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         valueTxt = view.findViewById(R.id.slideBarValue);
@@ -37,6 +38,7 @@ public class MeServoMotor extends MeModule implements SeekBar.OnSeekBarChangeLis
         slider.setProgress(0);
     }
 
+    @Override
     public void setDisable() {
         slider = view.findViewById(R.id.sliderBar);
         slider.setOnSeekBarChangeListener(null);
@@ -68,12 +70,14 @@ public class MeServoMotor extends MeModule implements SeekBar.OnSeekBarChangeLis
     }
 
     //@"servorun(%d,%c)\n",servoCount,variableChar
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return "servorun(" + servoIndex + "," + var + ")\n";
     }
 
     //@"servoattach(%@,%@,%d)\n",portStr,slotStr,servoCount]
+    @Override
     public String getScriptSetup() {
         servoIndex = servoCount++;
         return "servoattach(" + getPortString(port) + "," + getSlotString(slot) + ","

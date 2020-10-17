@@ -16,28 +16,29 @@ public class MeTemperature extends MeModule {
         shouldSelectSlot = true;
     }
 
-    public MeTemperature(JSONObject jobj) {
-        super(jobj);
+    public MeTemperature(JSONObject jObj) {
+        super(jObj);
         viewLayout = R.layout.dev_value_view;
         imageId = R.drawable.temperature;
         shouldSelectSlot = true;
     }
 
-
+    @Override
     public String getScriptRun(String var) {
         varReg = var;
         return var + " = temperature(" + getPortString(port) + "," + getSlotString(slot) + ")\n";
     }
 
+    @Override
     public byte[] getQuery(int index) {
         return buildQuery(type, port, slot, index);
     }
 
+    @Override
     public void setEchoValue(String value) {
         TextView txt = view.findViewById(R.id.textValue);
         //double centi = ((double)Integer.parseInt(value)*0.0625);
         txt.setText(value);
     }
-
 
 }

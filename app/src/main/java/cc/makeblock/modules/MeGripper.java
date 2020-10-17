@@ -43,6 +43,7 @@ public class MeGripper extends MeModule {
         this.scale = 1.33f;
     }
 
+    @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         mSpeedLabel = view.findViewById(R.id.speedLabel);
@@ -108,12 +109,13 @@ public class MeGripper extends MeModule {
         });
         mSpeedButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View v) {
                 Log.d("mb", "speed");
             }
         });
     }
 
+    @Override
     public void setDisable() {
         mLeftGripperBtn = view.findViewById(R.id.leftGripperBtn);
         mRightGripperBtn = view.findViewById(R.id.rightGripperBtn);

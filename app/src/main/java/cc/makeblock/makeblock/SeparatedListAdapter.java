@@ -1,4 +1,5 @@
 package cc.makeblock.makeblock;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import android.content.Context;
@@ -22,8 +23,9 @@ public class SeparatedListAdapter extends BaseAdapter {
         this.sections.put(section, adapter);
     }
 
+    @Override
     public Object getItem(int position) {
-        for (Object section : this.sections.keySet()) {
+        for (String section : this.sections.keySet()) {
             Adapter adapter = sections.get(section);
             int size = adapter.getCount() + 1;
             // check if position inside this section
@@ -37,6 +39,7 @@ public class SeparatedListAdapter extends BaseAdapter {
         return null;
     }
 
+    @Override
     public int getCount() {
         // total together all sections, plus one for each section header
         int total = 0;
@@ -57,7 +60,7 @@ public class SeparatedListAdapter extends BaseAdapter {
     @Override
     public int getItemViewType(int position) {
         int type = 1;
-        for (Object section : this.sections.keySet()) {
+        for (String section : this.sections.keySet()) {
             Adapter adapter = sections.get(section);
             int size = adapter.getCount() + 1;
             // check if position inside this section
@@ -78,9 +81,10 @@ public class SeparatedListAdapter extends BaseAdapter {
         return (getItemViewType(position) != TYPE_SECTION_HEADER);
     }
 
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         int sectionnum = 0;
-        for (Object section : this.sections.keySet()) {
+        for (String section : this.sections.keySet()) {
             Adapter adapter = sections.get(section);
             int size = adapter.getCount() + 1;
 
@@ -97,7 +101,9 @@ public class SeparatedListAdapter extends BaseAdapter {
         return null;
     }
 
+    @Override
     public long getItemId(int position) {
         return position;
     }
+
 }

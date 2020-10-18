@@ -9,29 +9,11 @@
         android:layout_height="fill_parent"
         android:background="#FFFFFF"
         android:orientation="vertical">
-		<!-- RadioGroup
-		    android:id="@+id/radioModSelect"
-		    android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-		    <RadioButton
-                    android:id="@+id/modMakeblock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:checked="true"
-                    android:text="Makeblock" />
-                <RadioButton
-                    android:id="@+id/modArduino"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Arduino" />
-		</RadioGroup-->
+
         <ListView
             android:id="@+id/moduleListView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1" />
     </LinearLayout>
 

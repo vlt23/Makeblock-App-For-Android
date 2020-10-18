@@ -53,9 +53,9 @@ public class MainActivity extends Activity {
     public static float screenHeight;
     private boolean isExit = false;
     private boolean hasTask = false;
-    private Timer tExit = new Timer();
+    private final Timer tExit = new Timer();
     private TimerTask task;
-    private Intent serviceIntent = new Intent("cc.makeblock.makeblock");
+    private final Intent serviceIntent = new Intent("cc.makeblock.makeblock");
     LocalLayout layouts;
 
     ListView historyListView;
@@ -245,7 +245,6 @@ public class MainActivity extends Activity {
     }
 
     private String readTextFile(InputStream inputStream) {
-
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
         int len;
@@ -280,32 +279,20 @@ public class MainActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String name = editText.getText().toString();
-                                MeLayout newlayout = new MeLayout(name);
-                                historyList.add(0, newlayout);
+                                MeLayout newLayout = new MeLayout(name);
+                                historyList.add(0, newLayout);
                                 setupViews();
                                 try {
-                                    layouts.FileSave(newlayout.name + ".json", newlayout.toString());
+                                    layouts.FileSave(newLayout.name + ".json", newLayout.toString());
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                                pushToLayout(newlayout);
+                                pushToLayout(newLayout);
                             }
                         }).setNegativeButton(getString(R.string.cancel), null).show();
                 break;
-            case R.id.action_help:
-                Intent intentHelp = new Intent(MainActivity.this, WebviewActivity.class);
-                intentHelp.putExtra("url", getString(R.string.url_help));
-                startActivity(intentHelp);
-                break;
             case R.id.action_about:
-                Intent intentAbout = new Intent(MainActivity.this, WebviewActivity.class);
-                intentAbout.putExtra("url", getString(R.string.url_about));
-                startActivity(intentAbout);
-                break;
-            case R.id.action_feedback:
-                Intent intentFeedback = new Intent(MainActivity.this, WebviewActivity.class);
-                intentFeedback.putExtra("url", getString(R.string.url_feedback));
-                startActivity(intentFeedback);
+                // TODO
                 break;
             default:
                 break;
@@ -322,8 +309,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
-                && event.getAction() == KeyEvent.ACTION_DOWN
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN
                 && event.getRepeatCount() == 0) {
             if (!isExit) {
                 isExit = true;

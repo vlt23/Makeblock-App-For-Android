@@ -10,7 +10,7 @@
         android:id="@+id/action_bluetooth"
         android:orderInCategory="100"
         android:icon="@drawable/bluetooth_off"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="Bluetooth" />
 
 </menu>

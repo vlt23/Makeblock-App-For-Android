@@ -12,14 +12,12 @@ import android.widget.TextView;
 import java.util.List;
 
 public class ComplexListAdapter extends BaseAdapter {
-    private List<ComplexItem> list;
-    private Context context;
-    private LayoutInflater mInflater;
+    private final List<ComplexItem> list;
+    private final LayoutInflater mInflater;
     public MainActivity delegate;
 
     public ComplexListAdapter(Context context, List<ComplexItem> list) {
         this.list = list;
-        this.context = context;
         this.mInflater = LayoutInflater.from(context);
     }
 
@@ -70,7 +68,6 @@ public class ComplexListAdapter extends BaseAdapter {
             iv3.setVisibility(View.INVISIBLE);
         }
         OnClickListener l1 = new OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
                 delegate.openExample(item.getInteger(MainActivity.ITEM_INDEX_1));
@@ -78,7 +75,6 @@ public class ComplexListAdapter extends BaseAdapter {
         };
         iv1.setOnClickListener(l1);
         OnClickListener l2 = new OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
                 delegate.openExample(item.getInteger(MainActivity.ITEM_INDEX_2));
@@ -86,7 +82,6 @@ public class ComplexListAdapter extends BaseAdapter {
         };
         iv2.setOnClickListener(l2);
         OnClickListener l3 = new OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
                 delegate.openExample(item.getInteger(MainActivity.ITEM_INDEX_3));

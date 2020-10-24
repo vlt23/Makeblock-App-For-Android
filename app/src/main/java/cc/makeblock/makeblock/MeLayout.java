@@ -1,16 +1,6 @@
 package cc.makeblock.makeblock;
 
 import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
 import cc.makeblock.modules.MeButton;
 import cc.makeblock.modules.MeCarController;
 import cc.makeblock.modules.MeDigiSeg;
@@ -27,6 +17,14 @@ import cc.makeblock.modules.MeServoMotor;
 import cc.makeblock.modules.MeSoundSensor;
 import cc.makeblock.modules.MeTemperature;
 import cc.makeblock.modules.MeUltrasonic;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class MeLayout {
     static final String dbg = "Layout";
@@ -98,7 +96,6 @@ public class MeLayout {
                     case MeModule.DEV_CAR_CONTROLLER:
                         mod = new MeCarController(jobj);
                         break;
-
 //				case MeModule.DEV_GRIPPER_CONTROLLER:
 //					mod = new MeGripper(jobj);
 //					break;
@@ -140,9 +137,8 @@ public class MeLayout {
             json.put("createTime", createTime);
             json.put("updateTime", updateTime);
             JSONArray moduleListJArray = new JSONArray();
-            // jarray sequence == arraylist sequence
-            for (int i = 0; i < moduleList.size(); i++) {
-                MeModule mod = moduleList.get(i);
+            // jArray sequence == arraylist sequence
+            for (MeModule mod : moduleList) {
                 moduleListJArray.put(mod.toJson());
             }
             json.put("moduleList", moduleListJArray);
@@ -151,7 +147,6 @@ public class MeLayout {
         }
         return json;
     }
-
 
     public MeModule addModule(int type, int port, int slot, int x, int y) {
         MeModule mod;

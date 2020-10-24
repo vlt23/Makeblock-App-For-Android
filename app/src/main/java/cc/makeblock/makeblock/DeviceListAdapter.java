@@ -11,14 +11,11 @@ import java.util.List;
 
 public class DeviceListAdapter extends BaseAdapter {
 
-    private Context context;
     private List<String> mData;
-    private int mResource;
-    private LayoutInflater mLayoutInflater;
+    private final int mResource;
+    private final LayoutInflater mLayoutInflater;
 
     public DeviceListAdapter(Context context, List<String> list, int resource) {
-
-        this.context = context;
         this.mData = list;
         this.mResource = resource;
         this.mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -28,23 +25,23 @@ public class DeviceListAdapter extends BaseAdapter {
         this.mData = list;
     }
 
+    @Override
     public int getCount() {
-
         return this.mData.size();
     }
 
+    @Override
     public Object getItem(int position) {
-
         return this.mData.get(position);
     }
 
+    @Override
     public long getItemId(int position) {
-
         return position;
     }
 
+    @Override
     public View getView(int position, View contentView, ViewGroup parent) {
-
         contentView = this.mLayoutInflater.inflate(this.mResource, parent, false);
 
         TextView titleView = contentView.findViewById(R.id.device_item_title);
@@ -58,4 +55,5 @@ public class DeviceListAdapter extends BaseAdapter {
         }
         return contentView;
     }
-}  
+
+}

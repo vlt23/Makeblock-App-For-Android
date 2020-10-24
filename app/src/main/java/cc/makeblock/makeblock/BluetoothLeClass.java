@@ -16,7 +16,6 @@
 
 package cc.makeblock.makeblock;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -34,7 +33,6 @@ import java.util.List;
  * Service for managing connection and data communication with a GATT server hosted on a
  * given Bluetooth LE device.
  */
-@SuppressLint("NewApi")
 public class BluetoothLeClass {
     private final static String TAG = BluetoothLeClass.class.getSimpleName();
 
@@ -68,7 +66,7 @@ public class BluetoothLeClass {
     private OnDisconnectListener mOnDisconnectListener;
     private OnServiceDiscoverListener mOnServiceDiscoverListener;
     private OnDataAvailableListener mOnDataAvailableListener;
-    private Context mContext;
+    private final Context mContext;
 
     public void setOnConnectListener(OnConnectListener l) {
         mOnConnectListener = l;

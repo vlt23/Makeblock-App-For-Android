@@ -5,10 +5,9 @@ import java.util.Map;
 
 public class ComplexItem {
 
-    private Map<String, String> list = new HashMap<>();
+    private final Map<String, String> list = new HashMap<>();
 
     public ComplexItem() {
-
     }
 
     public void put(String key, String value) {
@@ -26,4 +25,5 @@ public class ComplexItem {
     public int getInteger(String key) {
         return Integer.parseInt(list.get(key));
     }
+
 }

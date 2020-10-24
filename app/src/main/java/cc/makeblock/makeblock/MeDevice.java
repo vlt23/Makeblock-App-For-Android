@@ -34,4 +34,5 @@ public class MeDevice {
     public int height() {
         return mHeight;
     }
+
 }

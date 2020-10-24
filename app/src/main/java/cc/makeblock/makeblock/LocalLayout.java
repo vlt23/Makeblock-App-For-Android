@@ -1,20 +1,18 @@
 package cc.makeblock.makeblock;
 
+import android.content.Context;
+import android.util.Log;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.util.Log;
-
 public class LocalLayout {
     static final String dbg = "locallayout";
     Context context;
-
 
     public LocalLayout(Context context) {
         this.context = context;
@@ -48,23 +46,6 @@ public class LocalLayout {
         context.deleteFile(file);
         files = fileList();
         Log.i(dbg, "file list" + Arrays.toString(files));
-    }
-
-    public void initLocalLayout() {
-        String[] allfile = fileList();
-        for (String file : allfile) {
-            context.deleteFile(file);
-        }
-		/*
-		MeLayout helloworld = new MeLayout("helloworld");
-		helloworld.addModule(MeModule.DEV_ULTRASOINIC, MeModule.PORT_3, MeModule.SLOT_1, 100, 100);
-		try {
-			FileSave(helloworld.name+".json",helloworld.toString());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
     }
 
     public String[] fileList() {

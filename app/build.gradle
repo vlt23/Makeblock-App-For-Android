@@ -10,10 +10,6 @@ android {
         targetSdkVersion 29
         versionCode 22
         versionName "1.0.21"
-
-        ndk {
-            moduleName "hello-jni"
-        }
     }
 
     buildTypes {

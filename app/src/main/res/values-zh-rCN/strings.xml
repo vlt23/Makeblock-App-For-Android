@@ -44,4 +44,6 @@
     <string name="Alert">!</string>
     <string name="Please_Press_Reset_Button">请按下主控板的复位键</string>
     <string name="back">返回</string>
+    <string name="gps_permission_denied">GPS权限被拒绝，请允许</string>
+    <string name="bluetooth">蓝牙</string>
 </resources>

@@ -1,11 +1,12 @@
 package cc.makeblock.makeblock;
 
-import android.app.Activity;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,7 +21,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,7 +39,8 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     public final static String ITEM_TITLE = "title";
     public final static String ITEM_CAPTION = "caption";
@@ -63,6 +67,8 @@ public class MainActivity extends Activity {
     ArrayList<MeLayout> exampleList;
     Map<String, String> localizedStrings = new HashMap<>();
     SeparatedListAdapter adapter;
+
+    private static final int PERMISSION_REQUEST_GPS = 0;
 
     public Map<String, ?> createSimpleItem(String title, String caption) {
         Map<String, String> item = new HashMap<>();
@@ -157,6 +163,7 @@ public class MainActivity extends Activity {
         serviceIntent.setPackage(this.getPackageName());
         startService(serviceIntent);
         task = new TimerTask() {
+            @Override
             public void run() {
                 isExit = false;
                 hasTask = true;
@@ -175,6 +182,7 @@ public class MainActivity extends Activity {
         } else {
             Toast.makeText(this, "BLE is supported", Toast.LENGTH_SHORT).show();
         }
+        requestGPSPermission();  // Android 9+ needs GPS permission to scan Bluetooth
     }
 
     @Override
@@ -194,13 +202,33 @@ public class MainActivity extends Activity {
         setupViews();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_GPS && grantResults.length == 1
+                && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            // User has rejected the GPS permission
+            Toast.makeText(getApplicationContext(), R.string.gps_permission_denied, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void requestGPSPermission() {
+        // Android 9+ needs GPS permission to scan Bluetooth
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_GPS);
+        }
+    }
+
     void readLocalLayout() {
-        //layouts.initLocalLayout();
         String[] fileList = layouts.fileList();
         historyList = new ArrayList<>();
         for (String filename : fileList) {
-            if (!filename.contains(".json"))
+            if (!filename.contains(".json")) {
                 continue;
+            }
 
             String jsonStr;
             try {

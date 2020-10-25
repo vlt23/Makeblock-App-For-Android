@@ -45,4 +45,6 @@
     <string name="drinkcar">Drink Car</string>
     <string name="Alert">Alert</string>
     <string name="Please_Press_Reset_Button">Please Press "Reset" Button On Board</string>
+    <string name="gps_permission_denied">GPS permission request was denied. Please allow it</string>
+    <string name="bluetooth">Bluetooth</string>
 </resources>

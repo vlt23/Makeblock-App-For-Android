@@ -1,7 +1,5 @@
 package cc.makeblock.makeblock;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -40,6 +38,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
 import cc.makeblock.modules.MeModule;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class LayoutView extends Activity {
+public class LayoutView extends AppCompatActivity {
     static final String dbg = "LayoutView";
     static final int BOARD_ARDUINO = 0;
 
@@ -119,8 +119,10 @@ public class LayoutView extends Activity {
         addModBtn = this.findViewById(R.id.drawModule);
         addModBtn.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
-                if (engineState > STAGE_IDLE) return;
+            public void onClick(View view) {
+                if (engineState > STAGE_IDLE) {
+                    return;
+                }
                 if (!isMenuVisible) {
                     new ScrollTask().execute(30);
                 } else {
@@ -145,7 +147,6 @@ public class LayoutView extends Activity {
                         startTimer(200);
                     } else {
                         if (BluetoothLE.sharedManager().isConnected()) {
-
                             engineState = STAGE_RUN;
                             enableAllModule();
                             runBtn.setImageResource(R.drawable.pause_button);
@@ -175,9 +176,11 @@ public class LayoutView extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        ActionBar actionBar = getActionBar();
-        actionBar.setTitle(layout.name);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(layout.name);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         moduleListView = this.findViewById(R.id.moduleListView);
         SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.list_modulelist,
                 new String[]{"title", "info", "img"},

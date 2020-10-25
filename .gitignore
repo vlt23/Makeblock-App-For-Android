@@ -14,7 +14,8 @@ hs_err_pid*
 # Build apk
 app/build/
 app/release/
+build/
 # Intellij Idea
 .idea/
-.gradle
+.gradle/
 local.properties

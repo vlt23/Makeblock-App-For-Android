@@ -3,6 +3,7 @@ package cc.makeblock.makeblock;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -320,13 +321,18 @@ public class MainActivity extends AppCompatActivity
                         }).setNegativeButton(getString(R.string.cancel), null).show();
                 break;
             case R.id.action_about:
-                // TODO
+                openAbout(this);
                 break;
             default:
                 break;
         }
 
         return true;
+    }
+
+    private static void openAbout(final Context context) {
+        final Intent intent = new Intent(context, AboutActivity.class);
+        context.startActivity(intent);
     }
 
     void pushToLayout(MeLayout layout) {

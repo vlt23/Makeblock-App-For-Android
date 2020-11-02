@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Makeblock</string>
+    <string name="github_url" translatable="false">https://github.com/vlt23/Makeblock-App-For-Android</string>
     <string name="history">History</string>
     <string name="examples">Examples</string>
     <string name="create_new_project">Create New Project</string>
@@ -47,4 +48,8 @@
     <string name="Please_Press_Reset_Button">Please Press "Reset" Button On Board</string>
     <string name="gps_permission_denied">GPS permission request was denied. Please allow it</string>
     <string name="bluetooth">Bluetooth</string>
+    <string name="open_dialog_title">Open with</string>
+    <string name="about_makeblock">About unofficial makeblock floss app</string>
+    <string name="source_code">Source code</string>
+    <string name="view_in_github">View in Github</string>
 </resources>

@@ -131,7 +131,7 @@ public class MeModule {
             if (type == MeModule.DEV_DCMOTOR) {
                 textPort.setText("PORT " + port);
             } else {
-                textPort.setText(port);
+                textPort.setText(Integer.toString(port));
             }
         } else if (port == MeModule.PORT_M1) {
             textPort.setText("M1");

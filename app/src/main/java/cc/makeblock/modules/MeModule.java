@@ -127,7 +127,8 @@ public class MeModule {
         if (textPort == null) {
             return;
         }
-        if (port < MeModule.PORT_M1) {
+        if (port < MeModule.PORT_M1 ||
+                port == MeModule.PORT_12) {  // Because the gripper doesn't use the M4 (== port 12)
             if (type == MeModule.DEV_DCMOTOR) {
                 textPort.setText("PORT " + port);
             } else {

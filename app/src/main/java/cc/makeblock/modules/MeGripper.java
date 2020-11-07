@@ -51,9 +51,7 @@ public class MeGripper extends MeModule {
         mRightGripperBtn = view.findViewById(R.id.rightGripperBtn);
         mSpeedButton = view.findViewById(R.id.speedButton);
         mPortLabel = view.findViewById(R.id.textPort);
-        if (port != 12) {  // workaround patch, check MeModule class
-            mPortLabel.setText((port > 8 ? ("M" + (port - 8)) : ("PORT " + port)));
-        }
+
         View.OnTouchListener touchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent evt) {

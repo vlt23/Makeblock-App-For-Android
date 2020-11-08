@@ -38,8 +38,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import cc.makeblock.modules.MeModule;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -308,10 +308,10 @@ public class LayoutView extends AppCompatActivity {
         rPort2 = popupLayout.findViewById(R.id.port2);
         rPort3 = popupLayout.findViewById(R.id.port3);
         rPort4 = popupLayout.findViewById(R.id.port4);
-//        rPort5 = popupLayout.findViewById(R.id.port5);
-//        rPort6 = popupLayout.findViewById(R.id.port6);
-//        rPort7 = popupLayout.findViewById(R.id.port7);
-//        rPort8 = popupLayout.findViewById(R.id.port8);
+        rPort5 = popupLayout.findViewById(R.id.port5);
+        rPort6 = popupLayout.findViewById(R.id.port6);
+        rPort7 = popupLayout.findViewById(R.id.port7);
+        rPort8 = popupLayout.findViewById(R.id.port8);
         rPort12 = popupLayout.findViewById(R.id.port12);
         rPortM1 = popupLayout.findViewById(R.id.portm1);
         rPortM2 = popupLayout.findViewById(R.id.portm2);
@@ -429,18 +429,18 @@ public class LayoutView extends AppCompatActivity {
                 case R.id.port4:
                     mod.port = MeModule.PORT_4;
                     break;
-//                case R.id.port5:
-//                    mod.port = MeModule.PORT_5;
-//                    break;
-//                case R.id.port6:
-//                    mod.port = MeModule.PORT_6;
-//                    break;
-//                case R.id.port7:
-//                    mod.port = MeModule.PORT_7;
-//                    break;
-//                case R.id.port8:
-//                    mod.port = MeModule.PORT_8;
-//                    break;
+                case R.id.port5:
+                    mod.port = MeModule.PORT_5;
+                    break;
+                case R.id.port6:
+                    mod.port = MeModule.PORT_6;
+                    break;
+                case R.id.port7:
+                    mod.port = MeModule.PORT_7;
+                    break;
+                case R.id.port8:
+                    mod.port = MeModule.PORT_8;
+                    break;
                 case R.id.port12:
                     mod.port = MeModule.PORT_12;
                     break;

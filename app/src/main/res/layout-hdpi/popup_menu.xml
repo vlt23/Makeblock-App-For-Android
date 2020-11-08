@@ -76,29 +76,29 @@
                     android:layout_height="wrap_content"
                     android:text="PORT 4" />
 
-<!--                <RadioButton-->
-<!--                    android:id="@+id/port5"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="PORT 5" />-->
+                <RadioButton
+                    android:id="@+id/port5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PORT 5" />
 
-<!--                <RadioButton-->
-<!--                    android:id="@+id/port6"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="PORT 6" />-->
+                <RadioButton
+                    android:id="@+id/port6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PORT 6" />
 
-<!--                <RadioButton-->
-<!--                    android:id="@+id/port7"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="PORT 7" />-->
+                <RadioButton
+                    android:id="@+id/port7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PORT 7" />
 
-<!--                <RadioButton-->
-<!--                    android:id="@+id/port8"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="PORT 8" />-->
+                <RadioButton
+                    android:id="@+id/port8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PORT 8" />
 
                 <RadioButton
                     android:id="@+id/port12"

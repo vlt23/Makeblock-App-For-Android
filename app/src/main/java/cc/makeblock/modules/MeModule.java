@@ -4,15 +4,13 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import cc.makeblock.makeblock.MainActivity;
+import cc.makeblock.makeblock.MeDevice;
+import cc.makeblock.makeblock.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
-
-import cc.makeblock.makeblock.MainActivity;
-import cc.makeblock.makeblock.MeDevice;
-import cc.makeblock.makeblock.R;
 
 public class MeModule {
     static final String dbg = "MeModule";
@@ -55,10 +53,10 @@ public class MeModule {
     public static final int PORT_2 = 2;
     public static final int PORT_3 = 3;
     public static final int PORT_4 = 4;
-    public static final int PORT_5 = 5;  // unused ???
-    public static final int PORT_6 = 6;  // unused ???
-    public static final int PORT_7 = 7;  // unused ???
-    public static final int PORT_8 = 8;  // unused ???
+    public static final int PORT_5 = 5;
+    public static final int PORT_6 = 6;
+    public static final int PORT_7 = 7;
+    public static final int PORT_8 = 8;
     public static final int PORT_M1 = 9;
     public static final int PORT_M2 = 10;
     // Begin patch for Ultimate Robot Kit v2.0

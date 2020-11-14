@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity
     public final static String ITEM_TITLE_3 = "title3";
     public final static String ITEM_INDEX_3 = "index3";
     public final static String ITEM_IMAGE_3 = "image3";
-    public static float screenWidth;
-    public static float screenHeight;
+    public static int screenWidth;
+    public static int screenHeight;
     private boolean isExit = false;
     private boolean hasTask = false;
     private final Timer tExit = new Timer();
@@ -176,8 +176,8 @@ public class MainActivity extends AppCompatActivity
         display.getMetrics(displayMetrics);
         screenWidth = displayMetrics.widthPixels;
         screenHeight = displayMetrics.heightPixels;
-        MeDevice.sharedManager().setWidth((int) screenWidth);
-        MeDevice.sharedManager().setHeight((int) screenHeight);
+        MeDevice.sharedManager().setWidth(screenWidth);
+        MeDevice.sharedManager().setHeight(screenHeight);
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, "BLE not supported", Toast.LENGTH_SHORT).show();
         } else {

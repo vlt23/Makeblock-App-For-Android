@@ -6,11 +6,9 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import org.json.JSONObject;
-
 import cc.makeblock.makeblock.MeDevice;
 import cc.makeblock.makeblock.R;
+import org.json.JSONObject;
 
 public class MeUltrasonic extends MeModule {
     static String devName = "ultrasonic";
@@ -94,8 +92,8 @@ public class MeUltrasonic extends MeModule {
         toggleBt = view.findViewById(R.id.autoSwitch);
         OnCheckedChangeListener listener = new OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-                isAuto = arg1;
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isAuto = isChecked;
                 if (isAuto) {
                     mLoopHandler.postDelayed(mRunnable, 100);
                 } else {
@@ -119,7 +117,7 @@ public class MeUltrasonic extends MeModule {
     public void setEchoValue(String value) {
         TextView txt = view.findViewById(R.id.textValue);
         mCurrentValue = Float.parseFloat(value);
-        txt.setText(Math.floor(Float.parseFloat(value) * 10.0) / 10.0 + " cm");
+        txt.setText(Math.floor(mCurrentValue * 10.0) / 10.0 + " cm");
     }
 
 }

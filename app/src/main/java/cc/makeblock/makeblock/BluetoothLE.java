@@ -131,7 +131,9 @@ public class BluetoothLE extends Service {
 
     public boolean selectDevice(int position) {
         final BluetoothDevice device = mDevices.getDevice(position);
-        if (device == null) return false;
+        if (device == null) {
+            return false;
+        }
         if (mScanning) {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
             mScanning = false;
@@ -156,6 +158,9 @@ public class BluetoothLE extends Service {
 
     public void writeBuffer(byte[] buf) {
         for (byte b : buf) {
+            if (mBuffersIndex == 1024) {
+                mBuffersIndex = 0;
+            }
             mBuffers[mBuffersIndex] = b;
             mBuffersIndex++;
         }

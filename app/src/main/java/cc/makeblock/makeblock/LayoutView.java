@@ -192,8 +192,8 @@ public class LayoutView extends AppCompatActivity {
                 Map<String, Object> dev = getData().get(position);
                 int deviceType = (Integer) dev.get("dev");
                 //Log.i(dbg, "add module "+deviceType);
-                MeModule mod = layout.addModule(deviceType, deviceType == MeModule.DEV_DCMOTOR ? 9
-                        : 3, 0, 10, 10);
+                MeModule mod = layout.addModule(deviceType, deviceType == MeModule.DEV_DCMOTOR ? 9 : 3,
+                        0, 10, 10);
                 addViewModule(mod);
                 saveLayout();
             }
@@ -285,7 +285,6 @@ public class LayoutView extends AppCompatActivity {
     }
 
     void showPopupWindow(MeModule mod) {
-        // don't show port select for joystick
         popupLayout = (LinearLayout) LayoutInflater.from(this).inflate(
                 R.layout.popup_menu, null);
         popupWindow = new PopupWindow(this);
@@ -358,12 +357,10 @@ public class LayoutView extends AppCompatActivity {
         slotGroup = popupLayout.findViewById(R.id.slotRadioGroup);
         rSlot1 = popupLayout.findViewById(R.id.slot1);
         rSlot2 = popupLayout.findViewById(R.id.slot2);
-        TextView joystickTip = popupLayout.findViewById(R.id.joystickInfo);
 
         if (mod.type == MeModule.DEV_JOYSTICK || mod.type == MeModule.DEV_CAR_CONTROLLER) {
             portGroup.setVisibility(View.GONE);
             slotGroup.setVisibility(View.GONE);
-            joystickTip.setVisibility(View.VISIBLE);
         } else {
             if (!mod.shouldSelectSlot) {
                 slotGroup.setVisibility(View.GONE);
@@ -377,7 +374,6 @@ public class LayoutView extends AppCompatActivity {
                         break;
                 }
             }
-            joystickTip.setVisibility(View.GONE);
         }
         //portGroup.setOnCheckedChangeListener(new portChangeListener(mod));
         TextView txtTitle = popupLayout.findViewById(R.id.popupTitle);

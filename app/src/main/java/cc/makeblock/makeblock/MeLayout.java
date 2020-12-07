@@ -5,7 +5,6 @@ import cc.makeblock.modules.MeButton;
 import cc.makeblock.modules.MeCarController;
 import cc.makeblock.modules.MeDigiSeg;
 import cc.makeblock.modules.MeGripper;
-import cc.makeblock.modules.MeJoystick;
 import cc.makeblock.modules.MeLightSensor;
 import cc.makeblock.modules.MeLimitSwitch;
 import cc.makeblock.modules.MeLineFollower;
@@ -25,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MeLayout {
     static final String dbg = "Layout";
@@ -32,7 +32,7 @@ public class MeLayout {
     public String createTime;
     public String updateTime;
     public int type = 0;
-    public ArrayList<MeModule> moduleList;
+    public List<MeModule> moduleList;
 
     public MeLayout(JSONObject json) {
         try {
@@ -45,62 +45,60 @@ public class MeLayout {
             JSONArray moduleListJArray = json.getJSONArray("moduleList");
             moduleList = new ArrayList<>();
             for (int i = 0; i < moduleListJArray.length(); i++) {
-                JSONObject jobj = (JSONObject) moduleListJArray.get(i);
+                JSONObject jObj = (JSONObject) moduleListJArray.get(i);
 
-                int modtype = jobj.getInt("type");
+                int modType = jObj.getInt("type");
 
                 MeModule mod = null;
-                switch (modtype) {
+                switch (modType) {
                     case MeModule.DEV_ULTRASONIC:
-                        mod = new MeUltrasonic(jobj);
+                        mod = new MeUltrasonic(jObj);
                         break;
                     case MeModule.DEV_TEMPERATURE:
-                        mod = new MeTemperature(jobj);
+                        mod = new MeTemperature(jObj);
                         break;
                     case MeModule.DEV_LIGHTSENSOR:
-                        mod = new MeLightSensor(jobj);
+                        mod = new MeLightSensor(jObj);
                         break;
                     case MeModule.DEV_SOUNDSENSOR:
-                        mod = new MeSoundSensor(jobj);
+                        mod = new MeSoundSensor(jObj);
                         break;
                     case MeModule.DEV_LINEFOLLOWER:
-                        mod = new MeLineFollower(jobj);
+                        mod = new MeLineFollower(jObj);
                         break;
                     case MeModule.DEV_POTENTIALMETER:
-                        mod = new MePotential(jobj);
+                        mod = new MePotential(jObj);
                         break;
                     case MeModule.DEV_LIMITSWITCH:
-                        mod = new MeLimitSwitch(jobj);
+                        mod = new MeLimitSwitch(jObj);
                         break;
                     case MeModule.DEV_BUTTON:
-                        mod = new MeButton(jobj);
+                        mod = new MeButton(jObj);
                         break;
                     case MeModule.DEV_PIRMOTION:
-                        mod = new MePIRSensor(jobj);
+                        mod = new MePIRSensor(jObj);
                         break;
                     case MeModule.DEV_DCMOTOR:
-                        mod = new MeGripper(jobj);
+                        mod = new MeGripper(jObj);
                         break;
                     case MeModule.DEV_SERVO:
-                        mod = new MeServoMotor(jobj);
+                        mod = new MeServoMotor(jObj);
                         break;
                     case MeModule.DEV_JOYSTICK:
-                        mod = new MeJoystick(jobj);
+                    case MeModule.DEV_CAR_CONTROLLER:
+                        mod = new MeCarController(jObj);
                         break;
                     case MeModule.DEV_RGBLED:
-                        mod = new MeRgbLed(jobj);
+                        mod = new MeRgbLed(jObj);
                         break;
                     case MeModule.DEV_SEVSEG:
-                        mod = new MeDigiSeg(jobj);
+                        mod = new MeDigiSeg(jObj);
                         break;
-                    case MeModule.DEV_CAR_CONTROLLER:
-                        mod = new MeCarController(jobj);
-                        break;
-//				case MeModule.DEV_GRIPPER_CONTROLLER:
-//					mod = new MeGripper(jobj);
+                    //				case MeModule.DEV_GRIPPER_CONTROLLER:
+//					mod = new MeGripper(jObj);
 //					break;
                     default:
-                        Log.i(dbg, "unknow module from json " + modtype);
+                        Log.i(dbg, "unknown module from json " + modType);
                         break;
                 }
                 if (mod != null) {
@@ -209,7 +207,7 @@ public class MeLayout {
                 mod.yPosition = y;
                 break;
             case MeModule.DEV_JOYSTICK:
-                mod = new MeJoystick(port, slot);
+                mod = new MeCarController(port, slot);
                 mod.xPosition = x;
                 mod.yPosition = y;
                 break;
@@ -224,7 +222,7 @@ public class MeLayout {
                 mod.yPosition = y;
                 break;
             default:
-                Log.i(dbg, "unknow module " + type);
+                Log.i(dbg, "unknown module " + type);
                 mod = new MeModule(updateTime, MeModule.DEV_VERSION, 0, 0);
                 break;
         }

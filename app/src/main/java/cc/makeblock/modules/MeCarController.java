@@ -24,7 +24,7 @@ public class MeCarController extends MeModule {
     private boolean isPreviousStopped;  // Prevent loop sending 0 for leftSpeed and rightSpeed
 
     public MeCarController(int port, int slot) {
-        super(devName, MeModule.DEV_DCMOTOR, port, slot);
+        super(devName, MeModule.DEV_JOYSTICK, port, slot);
         initRestComponents();
     }
 
@@ -72,7 +72,7 @@ public class MeCarController extends MeModule {
                 // Linear Interpolator: Y = ( ( X - X1 )( Y2 - Y1) / ( X2 - X1) ) + Y1
                 if (angle < 90) {
                     rightSpeed = speed;
-                    float linearInterpolator = ((float) angle - 0) * (1 - (-1)) / (90 - 0) - 1;
+                    float linearInterpolator = ((float) angle - 0) * (1 - (-1)) / (90) - 1;
                     Log.d(devName, "linearInterpolator: " + linearInterpolator);
                     leftSpeed = (int) (linearInterpolator * speed);
                 } else if (angle < 180) {

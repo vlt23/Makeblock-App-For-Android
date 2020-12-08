@@ -42,16 +42,18 @@ public class DeviceListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View contentView, ViewGroup parent) {
-        contentView = this.mLayoutInflater.inflate(this.mResource, parent, false);
+        if (contentView == null) {
+            contentView = this.mLayoutInflater.inflate(this.mResource, parent, false);
 
-        TextView titleView = contentView.findViewById(R.id.device_item_title);
-        TextView descriptionView = contentView.findViewById(R.id.device_item_description);
-        String[] msg = this.mData.get(position).split(" ");
-        titleView.setText(msg[0]);
-        if (msg.length > 2) {
-            descriptionView.setText(msg[1] + " " + msg[2]);
-        } else {
-            descriptionView.setText(msg[1]);
+            TextView titleView = contentView.findViewById(R.id.device_item_title);
+            TextView descriptionView = contentView.findViewById(R.id.device_item_description);
+            String[] msg = this.mData.get(position).split(" ");
+            titleView.setText(msg[0]);
+            if (msg.length > 2) {
+                descriptionView.setText(msg[1] + " " + msg[2]);
+            } else {
+                descriptionView.setText(msg[1]);
+            }
         }
         return contentView;
     }

@@ -26,7 +26,6 @@ public class DialogActivity extends Activity {
         if (msg != null && msg.equals(getString(R.string.connected))) {
             Timer t = new Timer();
             TimerTask task = new TimerTask() {
-
                 @Override
                 public void run() {
                     shared.finish();

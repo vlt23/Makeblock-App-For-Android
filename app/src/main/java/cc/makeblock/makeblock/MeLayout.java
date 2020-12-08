@@ -78,6 +78,7 @@ public class MeLayout {
                     case MeModule.DEV_PIRMOTION:
                         mod = new MePIRSensor(jObj);
                         break;
+                    case MeModule.DEV_GRIPPER_CONTROLLER:
                     case MeModule.DEV_DCMOTOR:
                         mod = new MeGripper(jObj);
                         break;
@@ -94,9 +95,6 @@ public class MeLayout {
                     case MeModule.DEV_SEVSEG:
                         mod = new MeDigiSeg(jObj);
                         break;
-                    //				case MeModule.DEV_GRIPPER_CONTROLLER:
-//					mod = new MeGripper(jObj);
-//					break;
                     default:
                         Log.i(dbg, "unknown module from json " + modType);
                         break;

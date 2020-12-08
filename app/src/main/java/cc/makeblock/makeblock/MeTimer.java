@@ -8,18 +8,16 @@ public class MeTimer {
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
     private static final Handler mLoopHandler = new Handler(Looper.getMainLooper());
     private static final Runnable mRunnable = new Runnable() {
-
         @Override
         public void run() {
             if (mToSend != null) {
-//				Log.d("mb", "delay writting");
+//				Log.d("mb", "delay writing");
                 BluetoothLE.sharedManager().writeBuffer(mToSend);
             }
         }
     };
     private static boolean isLoop = false;
     private static final Runnable mLoopRunnable = new Runnable() {
-
         @Override
         public void run() {
             if (BluetoothLE.sharedManager().writeSingleBuffer()) {

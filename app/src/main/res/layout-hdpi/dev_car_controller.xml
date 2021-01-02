@@ -5,6 +5,27 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/speedLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="Speed: x1.6" />
+        <ImageButton
+            android:id="@+id/speedButton"
+            android:layout_width="84px"
+            android:layout_height="84px"
+            android:background="#00000000"
+            android:clickable="false"
+            android:scaleType="fitCenter"
+            android:src="@drawable/speed" />
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="130dp"
         android:layout_height="130dp">
 

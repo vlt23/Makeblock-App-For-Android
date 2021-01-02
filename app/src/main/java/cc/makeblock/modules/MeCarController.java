@@ -5,6 +5,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import cc.makeblock.makeblock.MeDevice;
 import cc.makeblock.makeblock.R;
 import io.github.controlwear.virtual.joystick.android.JoystickView;
@@ -14,6 +16,10 @@ public class MeCarController extends MeModule {
     static String devName = "carcontroller";
 
     private JoystickView joystickView;
+
+    private ImageButton mSpeedButton;
+    private TextView mSpeedLabel;
+    private float mCurrentXSpeed = 1.6f;
 
     private final Handler mStopHandler = new Handler(Looper.getMainLooper());
     private final Runnable mStopRunnable = () -> {
@@ -46,6 +52,23 @@ public class MeCarController extends MeModule {
         joystickView.setFixedCenter(true);  // set fix (0, 0) center
         joystickView.setAutoReCenterButton(true);
 
+        mSpeedButton = view.findViewById(R.id.speedButton);
+        mSpeedButton.setEnabled(true);
+        mSpeedButton.setClickable(true);
+        mSpeedButton.setOnTouchListener((v, event) -> {
+            v.performClick();
+            int y = (int) event.getY();
+            if (y < 42) {
+                mCurrentXSpeed += 0.01;
+            } else {
+                mCurrentXSpeed -= 0.01;
+            }
+            mCurrentXSpeed = (float) (mCurrentXSpeed > 2.3 ? 2.3 : Math.max(mCurrentXSpeed, 1.0));
+            mSpeedLabel = view.findViewById(R.id.speedLabel);
+            mSpeedLabel.setText("Speed: x" + String.format("%.2f", mCurrentXSpeed));
+            return false;
+        });
+
         View.OnTouchListener touchListener = (v, evt) -> {
             v.performClick();
             int action = evt.getAction();
@@ -59,7 +82,6 @@ public class MeCarController extends MeModule {
         };
 
         joystickView.setOnTouchListener(touchListener);
-
         joystickView.setOnMoveListener((angle, strength) -> {
             if (strength < 10) {
                 if (!isPreviousStopped) {
@@ -67,7 +89,7 @@ public class MeCarController extends MeModule {
                 }
             } else {
                 Log.d(devName, "angle: " + angle + ", strength: " + strength);
-                int speed = (int) (strength * 1.2);
+                int speed = (int) (strength * mCurrentXSpeed);
                 int leftSpeed, rightSpeed;
                 float linearInterpolator;  // Y = ( ( X - X1 )( Y2 - Y1) / ( X2 - X1) ) + Y1
                 if (angle < 90) {
@@ -102,6 +124,10 @@ public class MeCarController extends MeModule {
         joystickView.setOnTouchListener(null);
         joystickView.setOnMoveListener(null);
         joystickView.setEnabled(false);
+
+        mSpeedButton = view.findViewById(R.id.speedButton);
+        mSpeedButton.setClickable(false);
+        mSpeedButton.setEnabled(false);
     }
 
     private void stop() {

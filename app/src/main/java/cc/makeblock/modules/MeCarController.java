@@ -61,36 +61,33 @@ public class MeCarController extends MeModule {
         joystickView.setOnTouchListener(touchListener);
 
         joystickView.setOnMoveListener((angle, strength) -> {
-            Log.d(devName, "angle: " + angle + ", strength: " + strength);
             if (strength < 10) {
                 if (!isPreviousStopped) {
                     stop();
                 }
             } else {
+                Log.d(devName, "angle: " + angle + ", strength: " + strength);
                 int speed = (int) (strength * 1.2);
                 int leftSpeed, rightSpeed;
-                // Linear Interpolator: Y = ( ( X - X1 )( Y2 - Y1) / ( X2 - X1) ) + Y1
+                float linearInterpolator;  // Y = ( ( X - X1 )( Y2 - Y1) / ( X2 - X1) ) + Y1
                 if (angle < 90) {
-                    rightSpeed = speed;
-                    float linearInterpolator = ((float) angle - 0) * (1 - (-1)) / (90) - 1;
-                    Log.d(devName, "linearInterpolator: " + linearInterpolator);
+                    linearInterpolator = ((float) angle - 0) * (-1 - 1) / (90) + 1;
                     leftSpeed = (int) (linearInterpolator * speed);
+                    rightSpeed = speed;
                 } else if (angle < 180) {
                     leftSpeed = -speed;
-                    float linearInterpolator = ((float) angle - 90) * (1 - (-1)) / (180 - 90) - 1;
-                    Log.d(devName, "linearInterpolator: " + linearInterpolator);
+                    linearInterpolator = ((float) angle - 90) * (-1 - 1) / (180 - 90) + 1;
                     rightSpeed = (int) (linearInterpolator * speed);
                 } else if (angle < 270) {
-                    leftSpeed = speed;
-                    float linearInterpolator = ((float) angle - 180) * (-1 - 1) / (270 - 180) + 1;
-                    Log.d(devName, "linearInterpolator: " + linearInterpolator);
-                    rightSpeed = (int) (linearInterpolator * speed);
-                } else {
-                    rightSpeed = -speed;
-                    float linearInterpolator = ((float) angle - 270) * (-1 - 1) / (360 - 270) + 1;
-                    Log.d(devName, "linearInterpolator: " + linearInterpolator);
+                    linearInterpolator = ((float) angle - 180) * (1 - (-1)) / (270 - 180) - 1;
                     leftSpeed = (int) (linearInterpolator * speed);
+                    rightSpeed = -speed;
+                } else {
+                    leftSpeed = speed;
+                    linearInterpolator = ((float) angle - 270) * (1 - (-1)) / (360 - 270) - 1;
+                    rightSpeed = (int) (linearInterpolator * speed);
                 }
+                Log.d(devName, "linearInterpolator: " + linearInterpolator);
                 Log.d(devName, "leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
                 isPreviousStopped = false;
                 byte[] wr = buildJoystickWrite(DEV_JOYSTICK, leftSpeed, rightSpeed);

@@ -88,7 +88,7 @@ public class MeCarController extends MeModule {
                     stop();
                 }
             } else {
-                Log.d(devName, "angle: " + angle + ", strength: " + strength);
+//                Log.d(devName, "angle: " + angle + ", strength: " + strength);
                 int speed = (int) (strength * mCurrentXSpeed);
                 int leftSpeed, rightSpeed;
                 float linearInterpolator;  // Y = ( ( X - X1 )( Y2 - Y1) / ( X2 - X1) ) + Y1
@@ -109,8 +109,8 @@ public class MeCarController extends MeModule {
                     linearInterpolator = ((float) angle - 270) * (1 - (-1)) / (360 - 270) - 1;
                     rightSpeed = (int) (linearInterpolator * speed);
                 }
-                Log.d(devName, "linearInterpolator: " + linearInterpolator);
-                Log.d(devName, "leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
+//                Log.d(devName, "linearInterpolator: " + linearInterpolator);
+//                Log.d(devName, "leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
                 isPreviousStopped = false;
                 byte[] wr = buildJoystickWrite(DEV_JOYSTICK, leftSpeed, rightSpeed);
                 mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();

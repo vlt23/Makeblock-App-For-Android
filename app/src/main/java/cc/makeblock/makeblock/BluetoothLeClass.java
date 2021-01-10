@@ -54,12 +54,9 @@ public class BluetoothLeClass {
     }
 
     public interface OnDataAvailableListener {
-        void onCharacteristicRead(BluetoothGatt gatt,
-                                  BluetoothGattCharacteristic characteristic,
-                                  int status);
+        void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status);
 
-        void onCharacteristicWrite(BluetoothGatt gatt,
-                                   BluetoothGattCharacteristic characteristic);
+        void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic);
     }
 
     private OnConnectListener mOnConnectListener;
@@ -88,8 +85,8 @@ public class BluetoothLeClass {
         mContext = c;
     }
 
-    // Implements callback methods for GATT events that the app cares about.  For example,
-    // connection change and services discovered.
+    // Implements callback methods for GATT events that the app cares about.
+    // For example, connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -98,12 +95,12 @@ public class BluetoothLeClass {
                     mOnConnectListener.onConnect(gatt);
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
-                Log.i(TAG, "Attempting to start service discovery:" +
-                        mBluetoothGatt.discoverServices());
+                Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                if (mOnDisconnectListener != null)
+                if (mOnDisconnectListener != null) {
                     mOnDisconnectListener.onDisconnect(gatt);
+                }
                 Log.i(TAG, "Disconnected from GATT server.");
             }
         }
@@ -118,18 +115,17 @@ public class BluetoothLeClass {
         }
 
         @Override
-        public void onCharacteristicRead(BluetoothGatt gatt,
-                                         BluetoothGattCharacteristic characteristic,
-                                         int status) {
-            if (mOnDataAvailableListener != null)
+        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            if (mOnDataAvailableListener != null) {
                 mOnDataAvailableListener.onCharacteristicRead(gatt, characteristic, status);
+            }
         }
 
         @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt,
-                                            BluetoothGattCharacteristic characteristic) {
-            if (mOnDataAvailableListener != null)
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            if (mOnDataAvailableListener != null) {
                 mOnDataAvailableListener.onCharacteristicWrite(gatt, characteristic);
+            }
         }
     };
 
@@ -139,8 +135,7 @@ public class BluetoothLeClass {
      * @return Return true if the initialization is successful.
      */
     public boolean initialize() {
-        // For API level 18 and above, get a reference to BluetoothAdapter through
-        // BluetoothManager.
+        // For API level 18 and above, get a reference to BluetoothAdapter through BluetoothManager.
         if (mBluetoothManager == null) {
             mBluetoothManager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
             if (mBluetoothManager == null) {
@@ -174,8 +169,7 @@ public class BluetoothLeClass {
         }
 
         // Previously connected device.  Try to reconnect.
-        if (address.equals(mBluetoothDeviceAddress)
-                && mBluetoothGatt != null) {
+        if (address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
                 Log.d(TAG, "Ble Connected.");
@@ -191,8 +185,7 @@ public class BluetoothLeClass {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
         }
-        // We want to directly connect to the device, so we are setting the autoConnect
-        // parameter to false.
+        // We want to directly connect to the device, so we are setting the autoConnect parameter to false.
         mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
@@ -227,7 +220,8 @@ public class BluetoothLeClass {
 
     /**
      * Request a read on a given {@code BluetoothGattCharacteristic}. The read result is reported
-     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
+     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt,
+     * android.bluetooth.BluetoothGattCharacteristic, int)}
      * callback.
      *
      * @param characteristic The characteristic to read from.
@@ -246,8 +240,7 @@ public class BluetoothLeClass {
      * @param characteristic Characteristic to act on.
      * @param enabled        If true, enable notification.  False otherwise.
      */
-    public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic,
-                                              boolean enabled) {
+    public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
@@ -266,8 +259,9 @@ public class BluetoothLeClass {
      * @return A {@code List} of supported services.
      */
     public List<BluetoothGattService> getSupportedGattServices() {
-        if (mBluetoothGatt == null) return null;
-
+        if (mBluetoothGatt == null) {
+            return null;
+        }
         return mBluetoothGatt.getServices();
     }
 

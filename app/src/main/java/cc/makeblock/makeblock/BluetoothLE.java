@@ -117,8 +117,8 @@ public class BluetoothLE extends Service {
             }
             if (mCurrentDevice != null) {
                 s = s + " " + dev.getAddress() + " " + (dev.getBondState() == BluetoothDevice.BOND_NONE
-                        ? ((mCurrentDevice != null && mCurrentDevice.equals(dev))
-                        ? mContext.getString(R.string.connected) : mContext.getString(R.string.unbond))
+                        ? (mCurrentDevice.equals(dev) ? mContext.getString(R.string.connected) :
+                        mContext.getString(R.string.unbond))
                         : mContext.getString(R.string.bonded));
             } else {
                 s = s + " " + dev.getAddress() + " " + (dev.getBondState() == BluetoothDevice.BOND_BONDED

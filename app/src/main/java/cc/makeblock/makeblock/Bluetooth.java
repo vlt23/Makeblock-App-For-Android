@@ -1,16 +1,5 @@
 package cc.makeblock.makeblock;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -24,7 +13,16 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
-@SuppressLint("NewApi")
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 public class Bluetooth extends Service {
     static final String dbg = "bluetooth";
     static final int MSG_CONNECTED = 1;
@@ -105,26 +103,7 @@ public class Bluetooth extends Service {
             mmDevice = device;
         }
 
-        public void setBluetoothPairingPin(BluetoothDevice device) {
-            byte[] pinBytes = ("0000").getBytes();
-            try {
-                Log.d("mb", "Try to set the PIN");
-                Method m = device.getClass().getMethod("setPin", byte[].class);
-                m.invoke(device, pinBytes);
-                Log.d("mb", "Success to add the PIN.");
-                try {
-                    device.getClass().getMethod("setPairingConfirmation", boolean.class).invoke(device, true);
-                    Log.d("mb", "Success to setPairingConfirmation.");
-                } catch (Exception e) {
-                    Log.e("mb", e.getMessage());
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                Log.e("mb", e.getMessage());
-                e.printStackTrace();
-            }
-        }
-
+        @Override
         public void run() {
             // stop discovery, otherwise the pair window won't popup
             mBTAdapter.cancelDiscovery();
@@ -132,20 +111,9 @@ public class Bluetooth extends Service {
                 mmSocket = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
                 mmSocket.connect();
             } catch (IOException e) {
-                try {
-					/*if(mmDevice.getBondState()==BluetoothDevice.BOND_NONE){
-						setBluetoothPairingPin(mmDevice);
-						Method createBondMethod = mmDevice.getClass().getMethod("createBond"); 
-						createBondMethod.invoke(mmDevice);
-//						setBluetoothPairingPin(mmDevice);
-			        }else{
-//						Method m = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-//						tmp = (BluetoothSocket)m.invoke(device, Integer.valueOf(1));
-						tmp = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
-			        }*/
-                    //tmp = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
+                try {  // Fallback
                     Method m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-                    Object[] params = new Object[]{Integer.valueOf(1)};
+                    Object[] params = new Object[]{1};
                     mmSocket = (BluetoothSocket) m.invoke(mmDevice, params);
                     mmSocket.connect();
                 } catch (IOException err) {
@@ -164,7 +132,6 @@ public class Bluetooth extends Service {
                         InvocationTargetException | NoSuchMethodException e1) {
                     e1.printStackTrace();
                 }
-
                 return;
             }
             // start connection manager in another thread
@@ -203,6 +170,7 @@ public class Bluetooth extends Service {
             mmOutStream = tmpOut;
         }
 
+        @Override
         public void run() {
             byte[] buffer = new byte[1024];
             int bytes;
@@ -218,16 +186,14 @@ public class Bluetooth extends Service {
                             if ((c == 0x0a && commMode == MODE_LINE) || (c == 0x10 && commMode == MODE_FORWARD)) {
                                 // TODO: post msg to UI
                                 //write(mReceiveString.getBytes());
-                                Byte[] rxbtyes = mRx.toArray(new Byte[mRx.size()]);
-                                ///*
+                                Byte[] rxBytes = mRx.toArray(new Byte[0]);
                                 StringBuilder hexStr = new StringBuilder();
                                 int[] buf = new int[mRx.size()];
-                                for (int i1 = 0; i1 < rxbtyes.length; i1++) {
-                                    hexStr.append(String.format("%02X ", rxbtyes[i1]));
-                                    buf[i1] = rxbtyes[i1];
+                                for (int i1 = 0; i1 < rxBytes.length; i1++) {
+                                    hexStr.append(String.format("%02X ", rxBytes[i1]));
+                                    buf[i1] = rxBytes[i1];
                                 }
                                 Log.i("mb", "rx:" + hexStr);
-                                //*/
                                 mHandler.obtainMessage(MSG_RX, buf).sendToTarget();
                                 mRx.clear();
                             }
@@ -265,13 +231,11 @@ public class Bluetooth extends Service {
         }
     }
 
-
     public void devListClear() {
         btDevices.clear();
         // don't forget the connecting device
         if (connDev != null) {
             btDevices.add(connDev);
-
         }
     }
 
@@ -290,11 +254,7 @@ public class Bluetooth extends Service {
                         mHandler.sendMessage(msg);
                     }
                 }
-                //bluetoothConnect(device);
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-
                 if (mHandler != null) {
                     Message msg = mHandler.obtainMessage(MSG_DISCOVERY_FINISHED);
                     mHandler.sendMessage(msg);
@@ -302,17 +262,11 @@ public class Bluetooth extends Service {
                 Log.i(dbg, "bluetooth discover finished");
             } else if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 Log.i(dbg, "bluetooth ACTION_STATE_CHANGED:" + mBTAdapter.isEnabled());
-            } else if (action.equals("android.bluetooth.device.action.PAIRING_REQUEST")) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    //setBluetoothPairingPin(device);
-                }
             }
         }
     };
 
     public List<String> getBtDevList() {
-
         List<String> data = new ArrayList<>();
         Set<BluetoothDevice> pairedDevices = mBTAdapter.getBondedDevices();
 //      prDevices.clear();
@@ -332,11 +286,11 @@ public class Bluetooth extends Service {
                 s = "Bluetooth";
             }
             //String[] a = dev.getAddress().split(":");
-            s = s + " " + dev.getAddress() + " " + (dev.getBondState() == BluetoothDevice.BOND_BONDED ? ((connDev != null && connDev.equals(dev)) ? getString(R.string.connected) : getString(R.string.bonded)) : getString(R.string.unbond));
-
+            s = s + " " + dev.getAddress() + " " + (dev.getBondState() == BluetoothDevice.BOND_BONDED
+                    ? (connDev.equals(dev) ? getString(R.string.connected) : getString(R.string.bonded))
+                    : getString(R.string.unbond));
             data.add(s);
         }
-
         return data;
     }
 
@@ -387,17 +341,6 @@ public class Bluetooth extends Service {
 
         mConnectThread = new ConnectThread(device);
         mConnectThread.start();
-//		if(device.getBondState()==BluetoothDevice.BOND_NONE){
-//		  String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
-//		    Intent intent = new Intent(ACTION_PAIRING_REQUEST);
-//		    String EXTRA_DEVICE = "android.bluetooth.device.extra.DEVICE";
-//		    intent.putExtra(EXTRA_DEVICE, device);
-//		    String EXTRA_PAIRING_VARIANT = "android.bluetooth.device.extra.PAIRING_VARIANT";
-//		    int PAIRING_VARIANT_PIN = 0;
-//		    intent.putExtra(EXTRA_PAIRING_VARIANT, PAIRING_VARIANT_PIN);
-//		    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//		   startActivity(intent);
-//		}
 
         Intent intent = new Intent(this, DialogActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

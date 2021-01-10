@@ -40,6 +40,7 @@ public class MeModule {
     public static final int DEV_PINANGLE = 33;
     public static final int DEV_CAR_CONTROLLER = 40;
     public static final int DEV_GRIPPER_CONTROLLER = 41;
+    public static final int DEV_COMMON_CMD = 60;
 
     public static final int SLOT_1 = 1; // 0
     public static final int SLOT_2 = 2; // 1
@@ -82,7 +83,6 @@ public class MeModule {
     public int imageId;
     public View view;
     public String varReg = "";
-    public String varReg2 = "";
     protected Handler mHandler;
 
     public MeModule(String name, int type, int port, int slot) {
@@ -168,10 +168,6 @@ public class MeModule {
         return "";
     }
 
-    public String getScriptRun(String var, String var2) {
-        return "";
-    }
-
     public String getScriptSetup() {
         return "";
     }
@@ -180,6 +176,7 @@ public class MeModule {
         return null;
     }
 
+    @Override
     public String toString() {
         return this.toJson().toString();
     }
@@ -297,27 +294,30 @@ public class MeModule {
             cmd[8] = (byte) ((value >> 8) & 0xff);
             cmd[9] = (byte) ((value >> 16) & 0xff);
             cmd[10] = (byte) ((value >> 24) & 0xff);
-        } else {
-            if (type == DEV_DCMOTOR) {
-                final ByteBuffer buf = ByteBuffer.allocate(2);
-                buf.putShort((short) value);
-                buf.position(0);
-                // Read back bytes
-                final byte b1 = buf.get();
-                final byte b2 = buf.get();
-                cmd[8] = b1;
-                cmd[7] = b2;
-
-            } else if (type == DEV_SERVO) {
-                cmd[8] = (byte) (value & 0xff);
-            } else {
-                float f = (float) value;
-                int fi = Float.floatToIntBits(f);
-                cmd[8] = (byte) (fi & 0xff);
-                cmd[9] = (byte) ((fi >> 8) & 0xff);
-                cmd[10] = (byte) ((fi >> 16) & 0xff);
-                cmd[11] = (byte) ((fi >> 24) & 0xff);
+        } else if (type == DEV_DCMOTOR) {
+            final ByteBuffer buf = ByteBuffer.allocate(2);
+            buf.putShort((short) value);
+            buf.position(0);
+            // Read back bytes
+            final byte b1 = buf.get();
+            final byte b2 = buf.get();
+            cmd[8] = b1;
+            cmd[7] = b2;
+        } else if (type == DEV_SERVO) {
+            cmd[8] = (byte) (value & 0xff);
+        } else if (type == DEV_COMMON_CMD) {
+            if (value == DEV_ULTRASONIC) {
+                cmd[7] = (byte) 0x01 & 0xff;
+            } else if (value == DEV_CAR_CONTROLLER) {
+                cmd[7] = (byte) 0x00 & 0xff;
             }
+        } else {
+            float f = (float) value;
+            int fi = Float.floatToIntBits(f);
+            cmd[8] = (byte) (fi & 0xff);
+            cmd[9] = (byte) ((fi >> 8) & 0xff);
+            cmd[10] = (byte) ((fi >> 16) & 0xff);
+            cmd[11] = (byte) ((fi >> 24) & 0xff);
         }
 
         cmd[12] = (byte) '\n';

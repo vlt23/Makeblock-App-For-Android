@@ -1,31 +1,31 @@
 package cc.makeblock.modules;
 
 import android.os.Handler;
-import android.os.Looper;
-import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import cc.makeblock.makeblock.MeDevice;
 import cc.makeblock.makeblock.R;
 import org.json.JSONObject;
 
 public class MeUltrasonic extends MeModule {
     static String devName = "ultrasonic";
     private ToggleButton toggleBt;
-    private final Handler mLoopHandler = new Handler(Looper.getMainLooper());
 
     private boolean isAuto = false;
-    private float mCurrentValue = 0.0f;
+
+    private final int megaPiMode = 0x12;  // #define SET_MEGAPI_MODE in the firmware
 
     public MeUltrasonic(int port, int slot) {
         super(devName, MeModule.DEV_ULTRASONIC, port, slot);
-        viewLayout = R.layout.dev_auto_driver;
-        imageId = R.drawable.ultrasonic;
+        initRestComponents();
     }
 
     public MeUltrasonic(JSONObject jObj) {
         super(jObj);
+        initRestComponents();
+    }
+
+    private void initRestComponents() {
         viewLayout = R.layout.dev_auto_driver;
         imageId = R.drawable.ultrasonic;
     }
@@ -41,67 +41,18 @@ public class MeUltrasonic extends MeModule {
         return buildQuery(type, port, slot, index);
     }
 
-    private int mBackTime = 0;
-    private int mFrontTime = 0;
-    private final Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (isAuto) {
-                mLoopHandler.postDelayed(this, 100);
-                if (view != null) {
-                    int motorSpeed = MeDevice.sharedManager().motorSpeed;
-                    if (!MeDevice.sharedManager().manualMode) {
-                        if ((mCurrentValue > 0.0 && mCurrentValue < 40) || mBackTime > 0) {
-                            if (mBackTime < 5) {
-                                mBackTime++;
-                                byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, -motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
-                                byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, -motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
-                            } else if (mBackTime < 10) {
-                                mBackTime++;
-                                byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
-                                byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, -motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
-                            } else {
-                                mBackTime = 0;
-                            }
-                        } else {
-                            if (mFrontTime < 10) {
-                                byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
-                                byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, motorSpeed);
-                                mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
-                            }
-                            if (mCurrentValue == 0) {
-                                mFrontTime++;
-                            } else {
-                                mFrontTime = 0;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-
     @Override
     public void setEnable(Handler handler) {
         mHandler = handler;
         toggleBt = view.findViewById(R.id.autoSwitch);
-        OnCheckedChangeListener listener = new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                isAuto = isChecked;
-                if (isAuto) {
-                    mLoopHandler.postDelayed(mRunnable, 100);
-                } else {
-                    byte[] wr = buildWrite(DEV_DCMOTOR, PORT_M1, slot, 0);
-                    mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
-                    byte[] wr2 = buildWrite(DEV_DCMOTOR, PORT_M2, slot, 0);
-                    mHandler.obtainMessage(MSG_VALUE_CHANGED, wr2).sendToTarget();
-                }
+        toggleBt.setEnabled(true);
+        OnCheckedChangeListener listener = (buttonView, isChecked) -> {
+            isAuto = isChecked;
+            // type = 60, port = 0x12, slot = whatever, value = 1 or 40
+            if (isAuto) {
+                ultrasonicOn();
+            } else {
+                ultrasonicOff();
             }
         };
         toggleBt.setOnCheckedChangeListener(listener);
@@ -109,15 +60,30 @@ public class MeUltrasonic extends MeModule {
 
     @Override
     public void setDisable() {
+        if (mHandler != null) {
+            ultrasonicOff();
+        }
         toggleBt = view.findViewById(R.id.autoSwitch);
         toggleBt.setOnCheckedChangeListener(null);
+        toggleBt.setChecked(false);
+        toggleBt.setEnabled(false);
     }
 
     @Override
     public void setEchoValue(String value) {
         TextView txt = view.findViewById(R.id.textValue);
-        mCurrentValue = Float.parseFloat(value);
+        float mCurrentValue = Float.parseFloat(value);
         txt.setText(Math.floor(mCurrentValue * 10.0) / 10.0 + " cm");
+    }
+
+    private void ultrasonicOn() {
+        byte[] wr = buildWrite(DEV_COMMON_CMD, megaPiMode, 0, DEV_ULTRASONIC);
+        mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
+    }
+
+    private void ultrasonicOff() {
+        byte[] wr = buildWrite(DEV_COMMON_CMD, megaPiMode, 0, DEV_CAR_CONTROLLER);
+        mHandler.obtainMessage(MSG_VALUE_CHANGED, wr).sendToTarget();
     }
 
 }

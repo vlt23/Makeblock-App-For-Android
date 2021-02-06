@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,9 +14,6 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -31,6 +27,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -64,8 +61,8 @@ public class MainActivity extends AppCompatActivity
     LocalLayout layouts;
 
     ListView historyListView;
-    ArrayList<MeLayout> historyList;
-    ArrayList<MeLayout> exampleList;
+    List<MeLayout> historyList;
+    List<MeLayout> exampleList;
     Map<String, String> localizedStrings = new HashMap<>();
     SeparatedListAdapter adapter;
 
@@ -102,16 +99,13 @@ public class MainActivity extends AppCompatActivity
         initializeAdapter();
         // Get a reference to the ListView holder
         historyListView = this.findViewById(R.id.centerList);
-        historyListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    Log.i("listView", "item " + position + " clicked");
-                    MeLayout layout = historyList.get(position - 1);
-                    pushToLayout(layout);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        historyListView.setOnItemClickListener((parent, view, position, id) -> {
+            try {
+                Log.i("listView", "item " + position + " clicked");
+                MeLayout layout = historyList.get(position - 1);
+                pushToLayout(layout);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
         // Set the adapter on the ListView holder
@@ -233,7 +227,7 @@ public class MainActivity extends AppCompatActivity
 
             String jsonStr;
             try {
-                jsonStr = layouts.FileRead(filename);
+                jsonStr = layouts.fileRead(filename);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -274,7 +268,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private String readTextFile(InputStream inputStream) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        OutputStream outputStream = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
         int len;
         try {
@@ -297,27 +291,24 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             // action with ID action_refresh was selected
             case R.id.action_new:
                 final EditText editText = new EditText(this);
                 new AlertDialog.Builder(this).setTitle(getString(R.string.input_layout_name))
                         .setView(editText).setPositiveButton(getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String name = editText.getText().toString();
-                                MeLayout newLayout = new MeLayout(name);
-                                historyList.add(0, newLayout);
-                                setupViews();
-                                try {
-                                    layouts.FileSave(newLayout.name + ".json", newLayout.toString());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                pushToLayout(newLayout);
+                        (dialog, which) -> {
+                            String name = editText.getText().toString();
+                            MeLayout newLayout = new MeLayout(name);
+                            historyList.add(0, newLayout);
+                            setupViews();
+                            try {
+                                layouts.fileSave(newLayout.name + ".json", newLayout.toString());
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
+                            pushToLayout(newLayout);
                         }).setNegativeButton(getString(R.string.cancel), null).show();
                 break;
             case R.id.action_about:
@@ -336,7 +327,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     void pushToLayout(MeLayout layout) {
-        Intent intent = new Intent(this, LayoutView.class);
+        final Intent intent = new Intent(this, LayoutView.class);
         intent.putExtra("layout", layout.toString()); // use json string between activities
         startActivity(intent);
     }

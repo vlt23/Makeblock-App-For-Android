@@ -11,20 +11,20 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class LocalLayout {
-    static final String dbg = "locallayout";
-    Context context;
+    private static final String dbg = "locallayout";
+    private final Context context;
 
     public LocalLayout(Context context) {
         this.context = context;
     }
 
-    public void FileSave(String filename, String content) throws IOException {
+    public void fileSave(String filename, String content) throws IOException {
         FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
         fos.write(content.getBytes());
         fos.close();
     }
 
-    public String FileRead(String filename) throws IOException {
+    public String fileRead(String filename) throws IOException {
         FileInputStream fin = context.openFileInput(filename);
         byte[] b = new byte[fin.available()];
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -40,7 +40,7 @@ public class LocalLayout {
         return new String(data);
     }
 
-    public void FileDelete(String file) {
+    public void fileDelete(String file) {
         String[] files = fileList();
         Log.i(dbg, "file list" + Arrays.toString(files));
         context.deleteFile(file);

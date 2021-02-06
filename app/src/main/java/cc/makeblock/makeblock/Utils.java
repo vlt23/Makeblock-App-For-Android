@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.provider.Settings;
 
 public class Utils {
 
@@ -34,6 +35,10 @@ public class Utils {
         context.startActivity(Intent.createChooser(
                 intent, context.getString(R.string.open_dialog_title))
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    public static void openGPSSettings(final Context context) {
+        context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
 
 }

@@ -52,4 +52,7 @@
     <string name="about_makeblock">About unofficial makeblock floss app</string>
     <string name="source_code">Source code</string>
     <string name="view_in_github">View in Github</string>
+    <string name="enable_gps">Please enable GPS in order to allow scanning Bluetooth</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

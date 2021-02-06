@@ -3,14 +3,15 @@ package cc.makeblock.makeblock;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,15 +26,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
@@ -96,7 +94,6 @@ public class LayoutView extends AppCompatActivity {
     PopupWindow popupBtSelect;
     DeviceListAdapter devAdapter;
 
-    // Mscript related
     static final int STAGE_IDLE = 0; // the layout is editable in this state
     static final int STAGE_RUN = 4;
     int engineState = STAGE_IDLE;
@@ -117,50 +114,44 @@ public class LayoutView extends AppCompatActivity {
         contentView.getForeground().setAlpha(0);
         initValues();
         addModBtn = this.findViewById(R.id.drawModule);
-        addModBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (engineState > STAGE_IDLE) {
-                    return;
-                }
-                if (!isMenuVisible) {
-                    new ScrollTask().execute(30);
-                } else {
-                    new ScrollTask().execute(-30);
-                }
+        addModBtn.setOnClickListener(view -> {
+            if (engineState > STAGE_IDLE) {
+                return;
+            }
+            if (!isMenuVisible) {
+                new ScrollTask().execute(30);
+            } else {
+                new ScrollTask().execute(-30);
             }
         });
 
         runBtn = this.findViewById(R.id.runLayout);
-        runBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (engineState == STAGE_IDLE) {
-                    if (blt != null) {
-                        if (blt.connDev == null) {
-                            showBtSelect();
-                        } else {
-                            engineState = STAGE_RUN;
-                            enableAllModule();
-                            runBtn.setImageResource(R.drawable.pause_button);
-                        }
+        runBtn.setOnClickListener(view -> {
+            if (engineState == STAGE_IDLE) {
+                if (blt != null) {
+                    if (blt.connDev == null) {
+                        showBtSelect();
+                    } else {
+                        engineState = STAGE_RUN;
+                        enableAllModule();
+                        runBtn.setImageResource(R.drawable.pause_button);
+                    }
+                    startTimer(200);
+                } else {
+                    if (BluetoothLE.sharedManager().isConnected()) {
+                        engineState = STAGE_RUN;
+                        enableAllModule();
+                        runBtn.setImageResource(R.drawable.pause_button);
                         startTimer(200);
                     } else {
-                        if (BluetoothLE.sharedManager().isConnected()) {
-                            engineState = STAGE_RUN;
-                            enableAllModule();
-                            runBtn.setImageResource(R.drawable.pause_button);
-                            startTimer(200);
-                        } else {
-                            showBtSelect();
-                        }
+                        showBtSelect();
                     }
-                } else {
-                    stopTimer();
-                    engineState = STAGE_IDLE;
-                    disableAllModule();
-                    runBtn.setImageResource(R.drawable.run_button);
                 }
+            } else {
+                stopTimer();
+                engineState = STAGE_IDLE;
+                disableAllModule();
+                runBtn.setImageResource(R.drawable.run_button);
             }
         });
 
@@ -186,17 +177,14 @@ public class LayoutView extends AppCompatActivity {
                 new String[]{"title", "info", "img"},
                 new int[]{R.id.title, R.id.info, R.id.img});
         moduleListView.setAdapter(adapter);
-        moduleListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Map<String, Object> dev = getData().get(position);
-                int deviceType = (Integer) dev.get("dev");
-                //Log.i(dbg, "add module "+deviceType);
-                MeModule mod = layout.addModule(deviceType, deviceType == MeModule.DEV_DCMOTOR ? 9 : 3,
-                        0, 10, 10);
-                addViewModule(mod);
-                saveLayout();
-            }
+        moduleListView.setOnItemClickListener((parent, view, position, id) -> {
+            Map<String, Object> dev = getData().get(position);
+            int deviceType = (Integer) dev.get("dev");
+            //Log.i(dbg, "add module "+deviceType);
+            MeModule mod = layout.addModule(deviceType, deviceType == MeModule.DEV_DCMOTOR ? 9 : 3,
+                    0, 10, 10);
+            addViewModule(mod);
+            saveLayout();
         });
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -213,31 +201,72 @@ public class LayoutView extends AppCompatActivity {
         }
 
         disableAllModule();
+
+        hideSystemUI();
+        showEnableGPSDialog();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.d("mb", "start");
     }
 
     @Override
     protected void onStop() {
         stopTimer();
         super.onStop();
-        Log.d("mb", "stop");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("mb", "resume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("mb", "pause");
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            hideSystemUI();
+        }
+    }
+
+    /**
+     * Enable fullscreen mode
+     * https://developer.android.com/training/system-ui/immersive
+     */
+    private void hideSystemUI() {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+                        // Set the content to appear under the system bars so that the
+                        // content doesn't resize when the system bars hide and show.
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        // Hide the nav bar and status bar
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    private void showEnableGPSDialog() {
+        // Android 9+ needs enabled GPS to scan Bluetooth
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (!locationManager.isLocationEnabled()) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                Context context = this;
+                alertBuilder.setMessage(R.string.enable_gps)
+                        .setPositiveButton(R.string.yes, (dialog, which) -> Utils.openGPSSettings(context))
+                        .setNegativeButton(R.string.no, (dialog, which) -> {
+                            // Nothing to do
+                        }).show();
+            }
+        }
     }
 
     void enableAllModule() {
@@ -259,7 +288,7 @@ public class LayoutView extends AppCompatActivity {
     void saveLayout() {
         try {
             layout.updateTime = layout.getTime();
-            layouts.FileSave(layout.name + ".json", layout.toString());
+            layouts.fileSave(layout.name + ".json", layout.toString());
             getIntent().removeExtra("layout");
             getIntent().putExtra("layout", layout.toString()); // update intent string
         } catch (IOException e) {
@@ -295,12 +324,7 @@ public class LayoutView extends AppCompatActivity {
         popupWindow.setContentView(popupLayout);
         popupWindow.showAtLocation(findViewById(R.id.content), Gravity.LEFT | Gravity.TOP,
                 screenWidth / 4, screenHeight / 10 + 25);
-        popupWindow.setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                contentView.getForeground().setAlpha(0);
-            }
-        });
+        popupWindow.setOnDismissListener(() -> contentView.getForeground().setAlpha(0));
 
         portGroup = popupLayout.findViewById(R.id.radioGroup1);
         rPort1 = popupLayout.findViewById(R.id.port1);
@@ -729,13 +753,10 @@ public class LayoutView extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.delete))
                         .setMessage(getString(R.string.delete_this_layout))
-                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                layouts.FileDelete(layout.name + ".json");
-                                setResult(1);
-                                finish();
-                            }
+                        .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+                            layouts.fileDelete(layout.name + ".json");
+                            setResult(1);
+                            finish();
                         })
                         .setNegativeButton(getString(R.string.cancel), null)
                         .show();
@@ -889,7 +910,7 @@ public class LayoutView extends AppCompatActivity {
     }
 
     void parseMsg(int[] msg) {
-//		Log.d("mb", "parseMSG:"+msg.length);
+        Log.d("mb", "parseMSG: " + msg.length);
         if (msg.length > 2) {
             if ((msg[2] & 0xff) == MeModule.VERSION_INDEX) {
                 int len = msg[4];
@@ -966,83 +987,69 @@ public class LayoutView extends AppCompatActivity {
         ListView devList = popupBtDevLayout.findViewById(R.id.btdevList);
         devList.setAdapter(devAdapter);
 
-        popupBtSelect.setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                contentView.getForeground().setAlpha(0);
-            }
-        });
+        popupBtSelect.setOnDismissListener(() -> contentView.getForeground().setAlpha(0));
 
-        devList.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try { // the bluetooth list may vary
-                    if (blt != null) {
-                        BluetoothDevice dev = blt.btDevices.get(position);
-                        if (blt.connDev != null && blt.connDev.equals(dev)) {
-                            // disconnect device
-                            blt.bluetoothDisconnect(blt.connDev);
-                            return;
-                        }
-                        blt.bluetoothConnect(dev);
-                    } else {
-                        if (BluetoothLE.sharedManager().isConnected()) {
-                            BluetoothLE.sharedManager().close();
-                            devLEListChanged();
-                        } else {
-                            BluetoothLE.sharedManager().selectDevice(position);
-                        }
+        devList.setOnItemClickListener((parent, view, position, id) -> {
+            try { // the bluetooth list may vary
+                if (blt != null) {
+                    BluetoothDevice dev = blt.btDevices.get(position);
+                    if (blt.connDev != null && blt.connDev.equals(dev)) {
+                        // disconnect device
+                        blt.bluetoothDisconnect(blt.connDev);
+                        return;
                     }
-                } catch (Exception e) {
-                    Log.e(dbg, e.toString());
+                    blt.bluetoothConnect(dev);
+                } else {
+                    if (BluetoothLE.sharedManager().isConnected()) {
+                        BluetoothLE.sharedManager().close();
+                        devLEListChanged();
+                    } else {
+                        BluetoothLE.sharedManager().selectDevice(position);
+                    }
                 }
+            } catch (Exception e) {
+                Log.e(dbg, e.toString());
             }
         });
 
         contentView.getForeground().setAlpha(150);
         btnRefresh = popupBtDevLayout.findViewById(R.id.popupRefreshBtn);
-        btnRefresh.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (blt != null) {
-                    if (!blt.isDiscovery()) {
-                        blt.devListClear();
-                        devListChanged();
-                        Log.i(dbg, "startDiscovery");
-                        blt.startDiscovery();
-                    }
-                } else {
-                    BluetoothLE.sharedManager().stop();
-                    BluetoothLE.sharedManager().clear();
-                    devLEListChanged();
-                    BluetoothLE.sharedManager().start();
+        btnRefresh.setOnClickListener(v -> {
+            if (blt != null) {
+                if (!blt.isDiscovery()) {
+                    blt.devListClear();
+                    devListChanged();
+                    Log.i(dbg, "startDiscovery");
+                    blt.startDiscovery();
                 }
-                AnimationDrawable d = (AnimationDrawable) btnRefresh.getCompoundDrawables()[0];
-                d.start();
+            } else {
+                BluetoothLE.sharedManager().stop();
+                BluetoothLE.sharedManager().clear();
+                devLEListChanged();
+                BluetoothLE.sharedManager().start();
             }
+            AnimationDrawable d = (AnimationDrawable) btnRefresh.getCompoundDrawables()[0];
+            d.start();
         });
 
         Button btnOk = popupBtDevLayout.findViewById(R.id.popupOkBtn);
-        btnOk.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupBtSelect.dismiss();
-                if (blt != null) {
-                    if (blt.connDev != null) {
-                        engineState = STAGE_RUN;
-                        stopTimer();
-                        startTimer(200);
-                        enableAllModule();
-                        runBtn.setImageResource(R.drawable.pause_button);
-                    }
-                } else {
-                    if (BluetoothLE.sharedManager().isConnected()) {
-                        engineState = STAGE_RUN;
-                        stopTimer();
-                        startTimer(200);
-                        enableAllModule();
-                        runBtn.setImageResource(R.drawable.pause_button);
-                    }
+        btnOk.setOnClickListener(v -> {
+            popupBtSelect.dismiss();
+            if (blt != null) {
+                if (blt.connDev != null) {
+                    engineState = STAGE_RUN;
+                    stopTimer();
+                    startTimer(200);
+                    enableAllModule();
+                    runBtn.setImageResource(R.drawable.pause_button);
+                }
+            } else {
+                if (BluetoothLE.sharedManager().isConnected()) {
+                    engineState = STAGE_RUN;
+                    stopTimer();
+                    startTimer(200);
+                    enableAllModule();
+                    runBtn.setImageResource(R.drawable.pause_button);
                 }
             }
         });
@@ -1068,7 +1075,6 @@ public class LayoutView extends AppCompatActivity {
         }
         return query;
     }
-
 
     void startTimer(int interval) {
         if (mTimerTask == null) {

@@ -50,4 +50,7 @@
     <string name="about_makeblock">关于第三方makeblock开源版</string>
     <string name="source_code">源代码</string>
     <string name="view_in_github">在Github上查看</string>
+    <string name="enable_gps">请开启GPS以允许扫描蓝牙</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
 </resources>

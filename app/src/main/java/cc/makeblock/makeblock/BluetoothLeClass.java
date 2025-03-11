@@ -95,7 +95,7 @@ public class BluetoothLeClass {
                     mOnConnectListener.onConnect(gatt);
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
-                Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+                Log.i(TAG, "Attempting to start service discovery:");
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 if (mOnDisconnectListener != null) {
@@ -171,13 +171,15 @@ public class BluetoothLeClass {
         // Previously connected device.  Try to reconnect.
         if (address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-            if (mBluetoothGatt.connect()) {
-                Log.d(TAG, "Ble Connected.");
-                return true;
-            } else {
-                Log.d(TAG, "Ble Connecting fail.");
-                return false;
-            }
+            try {
+                if (mBluetoothGatt.connect()) {
+                    Log.d(TAG, "Ble Connected.");
+                    return true;
+                } else {
+                    Log.d(TAG, "Ble Connecting fail.");
+                    return false;
+                }
+            } catch (SecurityException ignored) {}
         }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
@@ -185,8 +187,12 @@ public class BluetoothLeClass {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
         }
-        // We want to directly connect to the device, so we are setting the autoConnect parameter to false.
-        mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
+        try {
+            // We want to directly connect to the device, so we are setting the autoConnect parameter to false.
+            mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
+        } catch (SecurityException ignored) {
+            return false;
+        }
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
         return true;
@@ -203,7 +209,9 @@ public class BluetoothLeClass {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        mBluetoothGatt.disconnect();
+        try {
+            mBluetoothGatt.disconnect();
+        } catch (SecurityException ignored) {}
     }
 
     /**
@@ -214,8 +222,10 @@ public class BluetoothLeClass {
         if (mBluetoothGatt == null) {
             return;
         }
-        mBluetoothGatt.close();
-        mBluetoothGatt = null;
+        try {
+            mBluetoothGatt.close();
+            mBluetoothGatt = null;
+        } catch (SecurityException ignored) {}
     }
 
     /**
@@ -231,7 +241,9 @@ public class BluetoothLeClass {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        mBluetoothGatt.readCharacteristic(characteristic);
+        try {
+            mBluetoothGatt.readCharacteristic(characteristic);
+        } catch (SecurityException ignored) {}
     }
 
     /**
@@ -245,11 +257,15 @@ public class BluetoothLeClass {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+        try {
+            mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+        } catch (SecurityException ignored) {}
     }
 
     public void writeCharacteristic(BluetoothGattCharacteristic characteristic) {
-        mBluetoothGatt.writeCharacteristic(characteristic);
+        try {
+            mBluetoothGatt.writeCharacteristic(characteristic);
+        } catch (SecurityException ignored) {}
     }
 
     /**

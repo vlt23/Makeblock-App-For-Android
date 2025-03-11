@@ -344,6 +344,9 @@ public class MainActivity extends AppCompatActivity
                     tExit.schedule(task, 2000);
                 }
             } else {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
                 BluetoothAdapter.getDefaultAdapter().disable();
                 stopService(serviceIntent);
                 finish();

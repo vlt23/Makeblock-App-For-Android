@@ -1,5 +1,6 @@
 package cc.makeblock.makeblock;
 
+import android.Manifest;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,10 +9,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import androidx.core.app.ActivityCompat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,6 +75,9 @@ public class Bluetooth extends Service {
         registerReceiver(mBTDevDiscover, filter);
         _instance = this;
         if (!mBTAdapter.isEnabled()) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
             mBTAdapter.enable();
         } else {
             startDiscovery();
@@ -84,10 +90,16 @@ public class Bluetooth extends Service {
     }
 
     public void startDiscovery() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         mBTAdapter.startDiscovery();
     }
 
     public boolean isDiscovery() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
         return mBTAdapter.isDiscovering();
     }
 
@@ -105,37 +117,39 @@ public class Bluetooth extends Service {
 
         @Override
         public void run() {
-            // stop discovery, otherwise the pair window won't popup
-            mBTAdapter.cancelDiscovery();
             try {
-                mmSocket = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
-                mmSocket.connect();
-            } catch (IOException e) {
-                try {  // Fallback
-                    Method m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-                    Object[] params = new Object[]{1};
-                    mmSocket = (BluetoothSocket) m.invoke(mmDevice, params);
+                mBTAdapter.cancelDiscovery();
+                try {
+                    mmSocket = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
                     mmSocket.connect();
-                } catch (IOException err) {
-                    Log.d("mb", "connect:" + err.getMessage());
-                    e.printStackTrace();
-                    try {
-                        mmSocket.close();
-                    } catch (IOException e1) {
+                } catch (IOException e) {
+                    try {  // Fallback
+                        Method m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
+                        Object[] params = new Object[]{1};
+                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, params);
+                        mmSocket.connect();
+                    } catch (IOException err) {
+                        Log.d("mb", "connect:" + err.getMessage());
+                        e.printStackTrace();
+                        try {
+                            mmSocket.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                        if (mHandler != null) {
+                            Message msg = mHandler.obtainMessage(MSG_CONNECT_FAIL);
+                            mHandler.sendMessage(msg);
+                        }
+                    } catch (IllegalAccessException | IllegalArgumentException |
+                             InvocationTargetException | NoSuchMethodException e1) {
                         e1.printStackTrace();
                     }
-                    if (mHandler != null) {
-                        Message msg = mHandler.obtainMessage(MSG_CONNECT_FAIL);
-                        mHandler.sendMessage(msg);
-                    }
-                } catch (IllegalAccessException | IllegalArgumentException |
-                        InvocationTargetException | NoSuchMethodException e1) {
-                    e1.printStackTrace();
+                    return;
                 }
-                return;
+                // start connection manager in another thread
+                bluetoothConnected(mmDevice, mmSocket);
+            } catch (SecurityException ignored) {
             }
-            // start connection manager in another thread
-            bluetoothConnected(mmDevice, mmSocket);
         }
 
         public void cancel() {
@@ -268,15 +282,21 @@ public class Bluetooth extends Service {
 
     public List<String> getBtDevList() {
         List<String> data = new ArrayList<>();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
         Set<BluetoothDevice> pairedDevices = mBTAdapter.getBondedDevices();
 //      prDevices.clear();
-        if (pairedDevices.size() > 0) {
+        if (!pairedDevices.isEmpty()) {
             for (BluetoothDevice device : pairedDevices) {
                 if (!btDevices.contains(device))
                     btDevices.add(device);
             }
         }
         for (BluetoothDevice dev : btDevices) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                return null;
+            }
             String s = dev.getName();
             if (s != null) {
                 if (s.contains("null")) {
@@ -286,6 +306,9 @@ public class Bluetooth extends Service {
                 s = "Bluetooth";
             }
             //String[] a = dev.getAddress().split(":");
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                return null;
+            }
             s = s + " " + dev.getAddress() + " " + (dev.getBondState() == BluetoothDevice.BOND_BONDED
                     ? (connDev.equals(dev) ? getString(R.string.connected) : getString(R.string.bonded))
                     : getString(R.string.unbond));
@@ -317,6 +340,9 @@ public class Bluetooth extends Service {
     }
 
     public void bluetoothDisconnect(BluetoothDevice device) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         Log.i(dbg, "disconnect to " + device.getName());
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -329,6 +355,9 @@ public class Bluetooth extends Service {
     }
 
     public void bluetoothConnect(BluetoothDevice device) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         Log.i(dbg, "try connect to " + device.getName());
         if (mConnectThread != null) {
             mConnectThread.cancel();

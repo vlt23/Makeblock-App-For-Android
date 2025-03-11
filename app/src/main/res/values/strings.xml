@@ -55,4 +55,5 @@
     <string name="enable_gps">Please enable GPS in order to allow scanning Bluetooth</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="take_photo">Take photo</string>
 </resources>

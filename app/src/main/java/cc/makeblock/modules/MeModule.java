@@ -41,6 +41,8 @@ public class MeModule {
     public static final int DEV_CAR_CONTROLLER = 40;
     public static final int DEV_GRIPPER_CONTROLLER = 41;
     public static final int DEV_COMMON_CMD = 60;
+    public static final int DEV_PHOTO = 100;
+    public static final int DEV_AI_DETECTION = 110;
 
     public static final int SLOT_1 = 1; // 0
     public static final int SLOT_2 = 2; // 1

@@ -38,7 +38,9 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import cc.makeblock.modules.MeAIDetection;
 import cc.makeblock.modules.MeModule;
+import cc.makeblock.modules.MePhoto;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -763,6 +765,16 @@ public class LayoutView extends AppCompatActivity {
                 break;
             case R.id.action_bluetooth:
                 showBtSelect();
+                break;
+            case R.id.action_photo:
+                MePhoto mePhoto = new MePhoto();
+                mePhoto.setEnable(mHandler);
+                mePhoto.takePhoto();
+                break;
+            case R.id.ai_detection:
+                MeAIDetection meAIDetection1 = new MeAIDetection();
+                meAIDetection1.setEnable(mHandler);
+                meAIDetection1.setAIDetectionMode();
                 break;
             default:
                 Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);

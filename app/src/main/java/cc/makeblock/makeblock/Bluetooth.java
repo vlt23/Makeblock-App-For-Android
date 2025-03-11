@@ -37,8 +37,8 @@ public class Bluetooth extends Service {
     BluetoothDevice connDev;
     ConnectThread mConnectThread;
     ConnectedThread mConnectedThread;
-    ArrayList<BluetoothDevice> btDevices;
-    ArrayList<BluetoothDevice> prDevices; // paired bt devices
+    List<BluetoothDevice> btDevices;
+    List<BluetoothDevice> prDevices; // paired bt devices
 
     Handler mHandler;
     static final int MODE_LINE = 0;

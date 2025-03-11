@@ -13,4 +13,14 @@
         android:icon="@drawable/bluetooth_off"
         android:title="@string/bluetooth"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_photo"
+        android:orderInCategory="100"
+        android:icon="@drawable/take_photo"
+        android:title="@string/take_photo"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/ai_detection"
+          android:orderInCategory="100"
+          android:icon="@drawable/take_photo"
+          android:title="@string/take_photo"
+          app:showAsAction="ifRoom" />
 </menu>
